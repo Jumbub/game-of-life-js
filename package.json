@@ -1,0 +1,16 @@
+{
+  "name": "game-of-insanity",
+  "version": "0.1.0",
+  "description": "front? js. back? js. infra? js. optimising game of life? js.",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "http-server"
+  },
+  "author": "github.com/jumbub",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.0",
+    "typescript": "^4.6.2"
+  }
+}
