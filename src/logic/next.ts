@@ -1,12 +1,6 @@
-import { Board, CELL_COLOR } from './board.js';
+import { Board, getCell, setCell, SKIP_MULTIPLYER } from './board.js';
 import { LOOKUP } from './lookup.js';
-
-const setCell = (output: ImageData, i: number, alive: boolean) => {
-  const color = CELL_COLOR[alive ? 1 : 0];
-  for (let offset = 0; offset < 4; offset++) {
-    output.data[i * 4 + offset] = color[offset];
-  }
-};
+import { pad } from './padding.js';
 
 const isAlive = ({ data, width }: ImageData, i: number) => {
   const sum =
@@ -22,20 +16,19 @@ const isAlive = ({ data, width }: ImageData, i: number) => {
   return LOOKUP[sum];
 };
 
-const sameCells = ({ data: a }: ImageData, { data: b }: ImageData, i: number) => {
-  return a[i * 4] === b[i * 4];
-};
-
 const revokeSkipForNeighbours = (i: number, outSkip: boolean[], width: number) => {
-  outSkip[i - width - 1] = false;
-  outSkip[i - width] = false;
-  outSkip[i - width + 1] = false;
-  outSkip[i - 1] = false;
-  outSkip[i] = false;
-  outSkip[i + 1] = false;
-  outSkip[i + width - 1] = false;
-  outSkip[i + width] = false;
-  outSkip[i + width + 1] = false;
+  const top = Math.floor((i - width - 1) / SKIP_MULTIPLYER);
+  outSkip[top] = false;
+  outSkip[top + 1] = false;
+  outSkip[top + 2] = false;
+  const middle = top + width;
+  outSkip[middle] = false;
+  outSkip[middle + 1] = false;
+  outSkip[middle + 2] = false;
+  const bottom = middle + width;
+  outSkip[bottom] = false;
+  outSkip[bottom + 1] = false;
+  outSkip[bottom + 2] = false;
 };
 
 export const next = (board: Board) => {
@@ -50,12 +43,14 @@ export const next = (board: Board) => {
 
   let i = 0;
   while (i < endI) {
-    while (inSkip[i]) i++;
+    while (inSkip[Math.floor(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
-    setCell(output, i, isAlive(input, i));
+    setCell(output.data, i, isAlive(input, i));
 
-    if (!sameCells(input, output, i)) revokeSkipForNeighbours(i, outSkip, width);
+    if (getCell(input.data, i) != getCell(output.data, i)) revokeSkipForNeighbours(i, outSkip, width);
 
     i++;
   }
+
+  pad(board);
 };
