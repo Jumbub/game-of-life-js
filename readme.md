@@ -37,6 +37,12 @@ http://localhost:8080/benchmark
 
 ### Initial benchmark (75s)
 
-Fairly much a manual transpilation from the original [C++ implementation](https://github.com/Jumbub/game-of-speed) to Typescript.
+Fairly much a manual transpilation from the original [C++ implementation](https://github.com/Jumbub/game-of-speed) to Typescript, but without using an advanced JS.
 
 [c15cae4d00beb59f5e6e50f495a323eca3f24eb5](https://github.com/Jumbub/game-of-snails/commit/9227c6a55ede200a1b6fe827c93010963e704f3d)
+
+### Use UInt8Array instead of regular Array for booleans (53s)
+
+First step towards some advanced JS.
+
+[01c5c850ccef4075d01441983a55cae6aa127c2a](https://github.com/Jumbub/game-of-snails/commit/01c5c850ccef4075d01441983a55cae6aa127c2a)
