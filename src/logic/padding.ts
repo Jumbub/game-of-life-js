@@ -1,4 +1,4 @@
-import { Board, setCellFrom, SKIP_MULTIPLYER } from './board.js';
+import { Board, DONT_SKIP, setCellFrom, setSkip, SKIP_MULTIPLYER } from './board.js';
 
 const assignPadding = ({ output: { data, width, height } }: Board) => {
   const innerWidth = width - 2;
@@ -27,21 +27,21 @@ const assignSkips = ({ output: { width, height }, outSkip }: Board) => {
   const innerHeight = height - 2;
 
   for (let i = 1; i <= width - 1; i++) {
-    outSkip[(i + width * innerHeight) / SKIP_MULTIPLYER] = false;
+    setSkip(outSkip, i + width * innerHeight, DONT_SKIP);
   }
   for (let i = width * (height - 1) + 1; i <= width * height - 2; i++) {
-    outSkip[(i - width * innerHeight) / SKIP_MULTIPLYER] = false;
+    setSkip(outSkip, i - width * innerHeight, DONT_SKIP);
   }
   for (let i = width; i <= width * (height - 1); i += width) {
-    outSkip[(i + innerWidth) / SKIP_MULTIPLYER] = false;
+    setSkip(outSkip, i + innerWidth, DONT_SKIP);
   }
   for (let i = width * 2 - 1; i <= width * (height - 1) - 1; i += width) {
-    outSkip[(i - innerWidth) / SKIP_MULTIPLYER] = false;
+    setSkip(outSkip, i - innerWidth, DONT_SKIP);
   }
-  outSkip[0 / SKIP_MULTIPLYER] = false;
-  outSkip[(width - 1) / SKIP_MULTIPLYER] = false;
-  outSkip[(width * (height - 1)) / SKIP_MULTIPLYER] = false;
-  outSkip[(width * height - 1) / SKIP_MULTIPLYER] = false;
+  setSkip(outSkip, 0, DONT_SKIP);
+  setSkip(outSkip, width - 1, DONT_SKIP);
+  setSkip(outSkip, width * (height - 1), DONT_SKIP);
+  setSkip(outSkip, width * height - 1, DONT_SKIP);
 };
 
 export const pad = (board: Board) => {

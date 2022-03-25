@@ -12,3 +12,15 @@ export const load = (board: Board, data: string) => {
   inSkip.fill(false);
   outSkip.fill(false);
 };
+
+export const match = ({ output }: Board, data: string) => {
+  if (data.length !== output.width * output.height) throw new Error('Miss-match width, height for data loader');
+
+  for (let i = 0; i < data.length; i++) {
+    const a = output.data[i * 4] ? 1 : 0;
+    const b = data[i] === '1' ? 1 : 0;
+    if (a != b) return false;
+  }
+
+  return true;
+};
