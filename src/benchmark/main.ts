@@ -10,7 +10,7 @@ import { run, setup } from '../graphics/run.js';
 
   const onDone = () => {
     const stop = performance.now();
-    alert(`${MAX_GENERATIONS} generations (${RENDERS_PER_SECOND}rps): ${stop - start}ms`);
+    alert(`${MAX_GENERATIONS} generations (${RENDERS_PER_SECOND}rps): ${((stop - start) / 1000).toFixed(2)}s`);
   };
   const meta = setup(WIDTH, HEIGHT, MAX_GENERATIONS, 1000 / RENDERS_PER_SECOND, onDone);
   load(meta.board, BENCHMARK);
