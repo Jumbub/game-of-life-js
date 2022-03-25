@@ -1,4 +1,4 @@
-import { Board, DONT_SKIP, getCell, getSkip, setCell, setSkip, SKIP_MULTIPLYER } from './board.js';
+import { Board, DONT_SKIP, getCell, getSkip, setCell, setSkip, SKIP, Skips, SKIP_MULTIPLYER } from './board.js';
 import { LOOKUP } from './lookup.js';
 import { pad } from './padding.js';
 
@@ -16,7 +16,7 @@ const isAlive = ({ data, width }: ImageData, i: number) => {
   return LOOKUP[sum];
 };
 
-const revokeSkipForNeighbours = (i: number, outSkip: boolean[], width: number) => {
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
   for (let b = i - width - 1; b <= i + width - 1; b += width) {
     for (let o = 0; o < 3; o++) {
       setSkip(outSkip, b + o, DONT_SKIP);
@@ -32,7 +32,7 @@ export const next = (board: Board) => {
 
   const endI = width * height;
 
-  outSkip.fill(true);
+  outSkip.fill(SKIP);
 
   let i = 0;
   while (i < endI) {

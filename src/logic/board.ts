@@ -2,15 +2,17 @@ export type Board = {
   input: ImageData;
   output: ImageData;
 
-  inSkip: boolean[];
-  outSkip: boolean[];
+  inSkip: Skips;
+  outSkip: Skips;
 };
 
 export const ALIVE = true;
 export const DEAD = false;
 
-export const SKIP = true;
-export const DONT_SKIP = false;
+export type Skip = 1 | 0;
+export type Skips = Uint8Array;
+export const SKIP = 1;
+export const DONT_SKIP = 0;
 
 export const ALIVE_COLOR = [255, 255, 255, 255] as const;
 export const DEAD_COLOR = [0, 0, 0, 255] as const;
@@ -24,7 +26,7 @@ export const newBoard = (viewWidth: number, viewHeight: number) => {
   const height = viewHeight + 2;
 
   const newImageData = () => new ImageData(width, height);
-  const newSkips = () => Array(getSkipI(width * height)).fill(false);
+  const newSkips = () => new Uint8Array(getSkipI(width * height)).fill(0);
 
   const board: Board = {
     input: newImageData(),
@@ -47,16 +49,16 @@ export const setCellFrom = (data: ImageData['data'], i: number, from: number) =>
   return setCell(data, i, getCell(data, from));
 };
 
-export const getCell = (data: ImageData['data'], i: number): boolean => {
+export const getCell = (data: ImageData['data'], i: number) => {
   return data[i * 4] ? ALIVE : DEAD;
 };
 
 export const getSkipI = (i: number) => Math.floor(i / SKIP_MULTIPLYER);
 
-export const setSkip = (skips: boolean[], i: number, value: boolean) => {
+export const setSkip = (skips: Skips, i: number, value: Skip) => {
   skips[getSkipI(i)] = value;
 };
 
-export const getSkip = (skips: boolean[], i: number) => {
+export const getSkip = (skips: Skips, i: number) => {
   return skips[getSkipI(i)];
 };

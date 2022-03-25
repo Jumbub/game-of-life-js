@@ -1,4 +1,4 @@
-import { Board, CELL_COLOR } from '../logic/board.js';
+import { Board, CELL_COLOR, DONT_SKIP } from '../logic/board.js';
 
 export const load = (board: Board, data: string) => {
   const { input, output, inSkip, outSkip } = board;
@@ -9,8 +9,8 @@ export const load = (board: Board, data: string) => {
     input.data[i] = output.data[i] = CELL_COLOR[state][i % 4];
   });
 
-  inSkip.fill(false);
-  outSkip.fill(false);
+  inSkip.fill(DONT_SKIP);
+  outSkip.fill(DONT_SKIP);
 };
 
 export const match = ({ output }: Board, data: string) => {
