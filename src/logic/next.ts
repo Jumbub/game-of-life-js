@@ -1,4 +1,4 @@
-import { Board, getCell, setCell, SKIP_MULTIPLYER } from './board.js';
+import { Board, getCell, getSkip, setCell, setSkip, SKIP_MULTIPLYER } from './board.js';
 import { LOOKUP } from './lookup.js';
 import { pad } from './padding.js';
 
@@ -17,18 +17,15 @@ const isAlive = ({ data, width }: ImageData, i: number) => {
 };
 
 const revokeSkipForNeighbours = (i: number, outSkip: boolean[], width: number) => {
-  const top = Math.floor((i - width - 1) / SKIP_MULTIPLYER);
-  outSkip[top] = false;
-  outSkip[top + 1] = false;
-  outSkip[top + 2] = false;
-  const middle = top + width;
-  outSkip[middle] = false;
-  outSkip[middle + 1] = false;
-  outSkip[middle + 2] = false;
-  const bottom = middle + width;
-  outSkip[bottom] = false;
-  outSkip[bottom + 1] = false;
-  outSkip[bottom + 2] = false;
+  setSkip(outSkip, i - width - 1, false);
+  setSkip(outSkip, i - width, false);
+  setSkip(outSkip, i - width + 1, false);
+  setSkip(outSkip, i - 1, false);
+  setSkip(outSkip, i, false);
+  setSkip(outSkip, i + 1, false);
+  setSkip(outSkip, i + width - 1, false);
+  setSkip(outSkip, i + width, false);
+  setSkip(outSkip, i + width + 1, false);
 };
 
 export const next = (board: Board) => {
@@ -43,11 +40,15 @@ export const next = (board: Board) => {
 
   let i = 0;
   while (i < endI) {
-    while (inSkip[Math.floor(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
+    while (getSkip(inSkip, i)) {
+      i += SKIP_MULTIPLYER;
+    }
 
     setCell(output.data, i, isAlive(input, i));
 
-    if (getCell(input.data, i) != getCell(output.data, i)) revokeSkipForNeighbours(i, outSkip, width);
+    if (getCell(input.data, i) != getCell(output.data, i)) {
+      revokeSkipForNeighbours(i, outSkip, width);
+    }
 
     i++;
   }

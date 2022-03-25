@@ -47,3 +47,11 @@ export const setCellFrom = (data: ImageData['data'], i: number, from: number) =>
 export const getCell = (data: ImageData['data'], i: number): boolean => {
   return data[i * 4] ? ALIVE : DEAD;
 };
+
+export const setSkip = (data: boolean[], i: number, value: boolean) => {
+  data[i / SKIP_MULTIPLYER] = value;
+};
+
+export const getSkip = (data: boolean[], i: number) => {
+  return data[i / SKIP_MULTIPLYER];
+};
