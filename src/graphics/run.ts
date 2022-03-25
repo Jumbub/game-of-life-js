@@ -4,23 +4,42 @@ import { newContext } from './context.js';
 import { handleMouse } from './mouse.js';
 import { render } from './render.js';
 
-export const run = (
+type Meta = {
+  board: Board;
+  context: CanvasRenderingContext2D;
+  maxGenerations: number;
+  rendersMinimumMilliseconds: number;
+  onDone: () => void;
+};
+
+export const setup = (
   viewWidth: number,
   viewHeight: number,
   maxGenerations: number,
   rendersMinimumMilliseconds: number,
-  load: (board: Board) => void,
-) => {
-  const context = newContext(viewWidth, viewHeight);
+  onDone: () => void,
+): Meta => {
   const board = newBoard(viewWidth, viewHeight);
+  const context = newContext(viewWidth, viewHeight);
+  const meta: Meta = {
+    board,
+    context,
+    maxGenerations,
+    rendersMinimumMilliseconds,
+    onDone,
+  };
 
-  load(board);
-
-  let computedGenerations = 0;
-
-  window.addEventListener('blur', () => (maxGenerations = 0)); // prevent unecessary cpu spam
+  window.addEventListener('blur', () => {
+    meta.maxGenerations = 0;
+  }); // prevent unecessary cpu spam
 
   handleMouse(board);
+
+  return meta;
+};
+
+export const run = ({ board, context, maxGenerations, rendersMinimumMilliseconds, onDone }: Meta) => {
+  let computedGenerations = 0;
 
   const renderLoop = async () => {
     let renderStartTime = Date.now();
@@ -37,6 +56,7 @@ export const run = (
 
     computedGenerations++;
     if (computedGenerations < maxGenerations) setTimeout(nextLoop, 0);
+    else onDone();
   };
 
   renderLoop();
