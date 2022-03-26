@@ -12,7 +12,7 @@ export const bench = (
     const stop = performance.now();
     const seconds = (stop - start) / 1000;
     const rps = meta.renders / seconds;
-    const valid = rps > rendersPerSecond * 0.995 ? '' : '*TOO FEW RENDERS TO BE CONSIDERED VALID*';
+    const valid = rps > rendersPerSecond * 0.999 ? '' : '*TOO FEW RENDERS TO BE CONSIDERED VALID*';
 
     const report = `seconds: ${seconds.toFixed(2)}s
 generations: ${meta.generations}
