@@ -1,15 +1,17 @@
 import { Board, newBoard } from '../logic/board.js';
-import { next } from '../logic/next.js';
+import { next, startNextBoardLoop } from '../logic/next.js';
 import { newContext } from './context.js';
 import { handleMouse } from './mouse.js';
 import { render } from './render.js';
 
-type Meta = {
+export type Meta = {
   board: Board;
   context: CanvasRenderingContext2D;
   maxGenerations: number;
+  generations: number;
+  renders: number;
   rendersMinimumMilliseconds: number;
-  onDone: () => void;
+  onDone: (meta: Meta) => void;
 };
 
 export const setup = (
@@ -17,7 +19,7 @@ export const setup = (
   viewHeight: number,
   maxGenerations: number,
   rendersMinimumMilliseconds: number,
-  onDone: () => void,
+  onDone: (meta: Meta) => void,
 ): Meta => {
   const board = newBoard(viewWidth, viewHeight);
   const context = newContext(viewWidth, viewHeight);
@@ -27,6 +29,8 @@ export const setup = (
     maxGenerations,
     rendersMinimumMilliseconds,
     onDone,
+    generations: 0,
+    renders: 0,
   };
 
   window.addEventListener('blur', () => {
@@ -39,26 +43,33 @@ export const setup = (
 };
 
 export const run = (meta: Meta) => {
-  const { board, context, rendersMinimumMilliseconds, onDone } = meta;
-  let computedGenerations = 0;
+  // let lastRender = 0;
+  // let lastProcessingTime = 0;
+  // const renderLoop = (now: DOMHighResTimeStamp) => {
+  //   document.title = String(meta.generations);
 
-  const renderLoop = async () => {
-    let renderStartTime = Date.now();
+  //   console.log(now, lastRender, meta.rendersMinimumMilliseconds);
+  //   if (now - lastRender > meta.rendersMinimumMilliseconds) {
+  //     render(meta.board, meta.context);
+  //     lastProcessingTime = performance.now() - now;
+  //     lastRender = now;
+  //     meta.renders++;
+  //   }
 
-    render(board, context);
-    document.title = String(computedGenerations);
+  //   if (meta.generations < meta.maxGenerations) requestAnimationFrame(renderLoop);
+  // };
 
-    if (computedGenerations <= meta.maxGenerations)
-      setTimeout(renderLoop, rendersMinimumMilliseconds - renderStartTime + Date.now());
-  };
+  const renderLambda = () => render(meta.board, meta.context);
 
-  const nextLoop = async () => {
-    next(board);
-    computedGenerations++;
-    if (computedGenerations < meta.maxGenerations) setTimeout(nextLoop, 0);
-    else onDone();
-  };
+  const interval = setInterval(() => {
+    document.title = String(meta.generations);
 
-  renderLoop();
-  nextLoop();
+    requestAnimationFrame(renderLambda);
+    meta.renders++;
+
+    if (meta.generations >= meta.maxGenerations) clearInterval(interval);
+  }, meta.rendersMinimumMilliseconds);
+
+  // renderLoop(lastRender);
+  startNextBoardLoop(meta);
 };

@@ -1,4 +1,4 @@
-import { Board, DONT_SKIP } from './board.js';
+import { Board, DONT_SKIP, SKIP_MULTIPLYER } from './board.js';
 
 const assignPadding = ({ output, width, height }: Board) => {
   const innerWidth = width - 2;
@@ -27,24 +27,24 @@ const assignSkips = ({ outSkip, width, height }: Board) => {
   const innerHeight = height - 2;
 
   for (let i = 1; i <= width - 1; i++) {
-    outSkip[i + width * innerHeight] = outSkip[DONT_SKIP];
+    outSkip[Math.floor((i + width * innerHeight) / SKIP_MULTIPLYER)] = DONT_SKIP;
   }
   for (let i = width * (height - 1) + 1; i <= width * height - 2; i++) {
-    outSkip[i - width * innerHeight] = outSkip[DONT_SKIP];
+    outSkip[Math.floor((i - width * innerHeight) / SKIP_MULTIPLYER)] = DONT_SKIP;
   }
   for (let i = width; i <= width * (height - 1); i += width) {
-    outSkip[i + innerWidth] = outSkip[DONT_SKIP];
+    outSkip[Math.floor((i + innerWidth) / SKIP_MULTIPLYER)] = DONT_SKIP;
   }
   for (let i = width * 2 - 1; i <= width * (height - 1) - 1; i += width) {
-    outSkip[i - innerWidth] = outSkip[DONT_SKIP];
+    outSkip[Math.floor((i - innerWidth) / SKIP_MULTIPLYER)] = DONT_SKIP;
   }
-  outSkip[0] = outSkip[DONT_SKIP];
-  outSkip[width - 1] = outSkip[DONT_SKIP];
-  outSkip[width * (height - 1)] = outSkip[DONT_SKIP];
-  outSkip[width * height - 1] = outSkip[DONT_SKIP];
+  outSkip[Math.floor(0 / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((width * (height - 1)) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((width * height - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
 };
 
-export const pad = (board: Board) => {
+export const assignBoardPadding = (board: Board) => {
   assignPadding(board);
   assignSkips(board);
 };
