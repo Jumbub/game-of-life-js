@@ -35,20 +35,18 @@ const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
 export const next = (board: Board) => {
   [board.input, board.output, board.inSkip, board.outSkip] = [board.output, board.input, board.outSkip, board.inSkip];
 
-  const { input, output, inSkip, outSkip, width, height } = board;
+  const size = board.width * board.height;
 
-  const size = width * height;
-
-  outSkip.fill(SKIP);
+  board.outSkip.fill(SKIP);
 
   let i = 0;
   while (i < size) {
-    while (inSkip[i]) i += SKIP_MULTIPLYER;
+    while (board.inSkip[i]) i += SKIP_MULTIPLYER;
 
-    output[i] = isAlive(i, input, width);
+    board.output[i] = isAlive(i, board.input, board.width);
 
-    if (input[i] !== output[i]) {
-      revokeSkipForNeighbours(i, outSkip, width);
+    if (board.input[i] !== board.output[i]) {
+      revokeSkipForNeighbours(i, board.outSkip, board.width);
     }
 
     i++;
