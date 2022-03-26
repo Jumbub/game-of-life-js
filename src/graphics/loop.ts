@@ -43,22 +43,6 @@ export const setup = (
 };
 
 export const run = (meta: Meta) => {
-  // let lastRender = 0;
-  // let lastProcessingTime = 0;
-  // const renderLoop = (now: DOMHighResTimeStamp) => {
-  //   document.title = String(meta.generations);
-
-  //   console.log(now, lastRender, meta.rendersMinimumMilliseconds);
-  //   if (now - lastRender > meta.rendersMinimumMilliseconds) {
-  //     render(meta.board, meta.context);
-  //     lastProcessingTime = performance.now() - now;
-  //     lastRender = now;
-  //     meta.renders++;
-  //   }
-
-  //   if (meta.generations < meta.maxGenerations) requestAnimationFrame(renderLoop);
-  // };
-
   const renderLambda = () => render(meta.board, meta.context);
 
   const interval = setInterval(() => {
@@ -70,6 +54,5 @@ export const run = (meta: Meta) => {
     if (meta.generations >= meta.maxGenerations) clearInterval(interval);
   }, meta.rendersMinimumMilliseconds);
 
-  // renderLoop(lastRender);
   startNextBoardLoop(meta);
 };
