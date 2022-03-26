@@ -1,17 +1,14 @@
-import { Board, CELL_COLOR, DONT_SKIP, getSkipI } from '../logic/board.js';
+import { Board, DONT_SKIP } from '../logic/board.js';
 
 export const handleMouse = (board: Board) => {
   let mouseDown = false;
   const draw = ({ x, y }: { x: number; y: number }) => {
     const RADIUS = 15;
-    for (let yi = y - RADIUS; yi < y + RADIUS; yi++) {
-      for (let xi = x - RADIUS; xi < x + RADIUS; xi++) {
-        const alive = Math.round(Math.random());
-        for (let c = 0; c < 4; c++) {
-          const i = yi * board.output.width + xi;
-          board.output.data[i * 4 + c] = CELL_COLOR[alive][c];
-          board.outSkip[getSkipI(i)] = DONT_SKIP;
-        }
+    for (let yo = y - RADIUS; yo < y + RADIUS; yo++) {
+      for (let xo = x - RADIUS; xo < x + RADIUS; xo++) {
+        const i = yo * board.width + xo;
+        board.output[i] = Math.round(Math.random());
+        board.outSkip[i] = DONT_SKIP;
       }
     }
   };

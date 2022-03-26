@@ -54,7 +54,6 @@ export const run = (meta: Meta) => {
 
   const nextLoop = async () => {
     next(board);
-
     computedGenerations++;
     if (computedGenerations < meta.maxGenerations) setTimeout(nextLoop, 0);
     else onDone();

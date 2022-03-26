@@ -1,48 +1,53 @@
-import { Board, DONT_SKIP, getCell, getSkip, setCell, setSkip, SKIP, Skips, SKIP_MULTIPLYER } from './board.js';
-import { LOOKUP } from './lookup.js';
+import { Board, Cells, DONT_SKIP, SKIP, Skips, SKIP_MULTIPLYER } from './board.js';
 import { pad } from './padding.js';
 
-const isAlive = ({ data, width }: ImageData, i: number) => {
+export const LOOKUP = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0] as const;
+
+const isAlive = (i: number, cells: Cells, width: number) => {
   const sum =
-    (data[(i - width - 1) * 4] ? 1 : 0) +
-    (data[(i - width) * 4] ? 1 : 0) +
-    (data[(i - width + 1) * 4] ? 1 : 0) +
-    (data[(i - 1) * 4] ? 1 : 0) +
-    (data[i * 4] ? 1 : 0) * 9 + // Notice the `* 9` here
-    (data[(i + 1) * 4] ? 1 : 0) +
-    (data[(i + width - 1) * 4] ? 1 : 0) +
-    (data[(i + width) * 4] ? 1 : 0) +
-    (data[(i + width + 1) * 4] ? 1 : 0);
+    cells[i - width - 1] +
+    cells[i - width] +
+    cells[i - width + 1] +
+    cells[i - 1] +
+    cells[i] * 9 + // Notice the `* 9` here
+    cells[i + 1] +
+    cells[i + width - 1] +
+    cells[i + width] +
+    cells[i + width + 1];
   return LOOKUP[sum];
 };
 
 const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
-  for (let b = i - width - 1; b <= i + width - 1; b += width) {
-    for (let o = 0; o < 3; o++) {
-      setSkip(outSkip, b + o, DONT_SKIP);
-    }
-  }
+  const top = Math.floor((i - width - 1) / SKIP_MULTIPLYER);
+  const middle = Math.floor((i - 1) / SKIP_MULTIPLYER);
+  const bottom = Math.floor((i + width - 1) / SKIP_MULTIPLYER);
+  outSkip[top] = DONT_SKIP;
+  outSkip[top + 1] = DONT_SKIP;
+  outSkip[top + 2] = DONT_SKIP;
+  outSkip[middle] = DONT_SKIP;
+  outSkip[middle + 1] = DONT_SKIP;
+  outSkip[middle + 2] = DONT_SKIP;
+  outSkip[bottom] = DONT_SKIP;
+  outSkip[bottom + 1] = DONT_SKIP;
+  outSkip[bottom + 2] = DONT_SKIP;
 };
 
 export const next = (board: Board) => {
   [board.input, board.output, board.inSkip, board.outSkip] = [board.output, board.input, board.outSkip, board.inSkip];
 
-  const { input, output, inSkip, outSkip } = board;
-  const { width, height } = input;
+  const { input, output, inSkip, outSkip, width, height } = board;
 
-  const endI = width * height;
+  const size = width * height;
 
   outSkip.fill(SKIP);
 
   let i = 0;
-  while (i < endI) {
-    while (getSkip(inSkip, i)) {
-      i += SKIP_MULTIPLYER;
-    }
+  while (i < size) {
+    while (inSkip[i]) i += SKIP_MULTIPLYER;
 
-    setCell(output.data, i, isAlive(input, i));
+    output[i] = isAlive(i, input, width);
 
-    if (getCell(input.data, i) != getCell(output.data, i)) {
+    if (input[i] !== output[i]) {
       revokeSkipForNeighbours(i, outSkip, width);
     }
 

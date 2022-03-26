@@ -1,6 +1,6 @@
 import { load } from './common/load.js';
 import { createNonDeterministicBenchmark } from './common/noneDeterministicBenchmark.js';
-import { run, setup } from './graphics/run.js';
+import { run, setup } from './graphics/loop.js';
 import { parseNumberOrDefault } from './parseNumberOrDefault.js';
 
 {

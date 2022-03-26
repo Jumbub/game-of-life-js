@@ -1,84 +1,63 @@
 import { BENCHMARK } from '../common/benchmark.js';
 import { load, match } from '../common/load.js';
-import { newBoard } from '../logic/board.js';
+import { sleep } from '../common/sleep.js';
+import { Board, newBoard } from '../logic/board.js';
 import { next } from '../logic/next.js';
 import { BENCHMARK_1 } from './benchmark_1.js';
-import { BENCHMARK_2 } from './benchmark_2.js';
-import { BENCHMARK_3 } from './benchmark_3.js';
-import { BENCHMARK_2000 } from './benchmark_2000.js';
 import { BENCHMARK_100 } from './benchmark_100.js';
+import { BENCHMARK_2 } from './benchmark_2.js';
+import { BENCHMARK_2000 } from './benchmark_2000.js';
+import { BENCHMARK_3 } from './benchmark_3.js';
+
+const passed = (status: null | true | false) => {
+  switch (status) {
+    case true:
+      document.body.style.backgroundColor = 'green';
+      break;
+    case false:
+      document.body.style.backgroundColor = 'darkRed';
+      break;
+    default:
+      document.body.style.backgroundColor = 'darkYellow';
+  }
+};
+
+const print = (label: string) => {
+  document.body.append(document.createTextNode(label));
+};
+
+const compare = async (label: string, board: Board, data: string) => {
+  if (match(board, data)) {
+    print(`${label} passed...`);
+  } else {
+    print(`${label} failed...`);
+    passed(false);
+    throw new Error(`${label} failed...`);
+  }
+  await sleep(1);
+};
+
+const runGenerations = (n: number, board: Board) => {
+  for (let i = 0; i < n; i++) {
+    next(board);
+    document.title = String(i);
+  }
+};
 
 (async () => {
-  const WIDTH = 2560;
-  const HEIGHT = 1440;
-
-  document.body.style.backgroundColor = 'yellow';
-  const message = (label: string) => {
-    document.body.append(document.createTextNode(label));
-  };
-
-  const board = newBoard(WIDTH, HEIGHT);
+  passed(null);
+  const board = newBoard(2560, 1440);
   load(board, BENCHMARK);
-
-  const a = async () => {
-    next(board);
-    document.title = String(0);
-    if (!match(board, BENCHMARK_1)) {
-      document.body.style.backgroundColor = 'red';
-      message('benchmark 1 failed...');
-      return;
-    } else message('benchmark 1 passed...');
-    setTimeout(b, 0);
-  };
-
-  const b = async () => {
-    next(board);
-    document.title = String(1);
-    if (!match(board, BENCHMARK_2)) {
-      document.body.style.backgroundColor = 'red';
-      message('benchmark 2 failed...');
-      return;
-    } else message('benchmark 2 passed...');
-    setTimeout(c, 0);
-  };
-
-  const c = async () => {
-    next(board);
-    document.title = String(2);
-    if (!match(board, BENCHMARK_3)) {
-      document.body.style.backgroundColor = 'red';
-      message('benchmark 3 failed...');
-      return;
-    } else message('benchmark 3 passed...');
-    setTimeout(d, 0);
-  };
-
-  const d = async () => {
-    for (let i = 3; i < 100; i++) {
-      next(board);
-      document.title = String(i);
-    }
-    if (!match(board, BENCHMARK_100)) {
-      document.body.style.backgroundColor = 'red';
-      message('benchmark 100 failed...');
-      return;
-    } else message('benchmark 100 passed...');
-    setTimeout(e, 0);
-  };
-
-  const e = async () => {
-    for (let i = 100; i < 2000; i++) {
-      next(board);
-      document.title = String(i);
-    }
-    if (!match(board, BENCHMARK_2000)) {
-      document.body.style.backgroundColor = 'red';
-      message('benchmark 2000 failed...');
-      return;
-    } else message('benchmark 2000 passed...');
-  };
-
-  a();
-
-  document.body.style.backgroundColor = 'green';
+  await compare('benchmark 0', board, BENCHMARK);
+  runGenerations(1, board);
+  await compare('benchmark 1', board, BENCHMARK_1);
+  runGenerations(1, board);
+  await compare('benchmark 2', board, BENCHMARK_2);
+  runGenerations(1, board);
+  await compare('benchmark 3', board, BENCHMARK_3);
+  runGenerations(97, board);
+  await compare('benchmark 100', board, BENCHMARK_100);
+  runGenerations(1900, board);
+  await compare('benchmark 2000', board, BENCHMARK_2000);
+  passed(true);
 })();

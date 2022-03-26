@@ -1,6 +1,6 @@
 import { BENCHMARK } from '../common/benchmark.js';
 import { load } from '../common/load.js';
-import { run, setup } from '../graphics/run.js';
+import { run, setup } from '../graphics/loop.js';
 
 {
   const WIDTH = 2560;
