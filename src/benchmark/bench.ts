@@ -14,10 +14,11 @@ export const bench = (
     const rps = meta.renders / seconds;
     const valid = rps > rendersPerSecond * 0.995 ? '' : '*TOO FEW RENDERS TO BE CONSIDERED VALID*';
 
-    const report = `${valid}seconds: ${seconds.toFixed(2)}s
+    const report = `seconds: ${seconds.toFixed(2)}s
 generations: ${meta.generations}
 generations/second: ${(meta.generations / seconds).toFixed(2)}
-renders/second: ${rps.toFixed(2)}`;
+renders/second: ${rps.toFixed(2)}
+${valid}`;
 
     console.log(report);
   };

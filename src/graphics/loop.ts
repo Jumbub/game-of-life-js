@@ -47,11 +47,14 @@ export const run = (meta: Meta) => {
 
   const interval = setInterval(() => {
     document.title = String(meta.generations);
-
     requestAnimationFrame(renderLambda);
     meta.renders++;
 
-    if (meta.generations >= meta.maxGenerations) clearInterval(interval);
+    if (meta.generations >= meta.maxGenerations) {
+      meta.onDone(meta);
+      clearInterval(interval);
+      return;
+    }
   }, meta.rendersMinimumMilliseconds);
 
   startNextBoardLoop(meta);

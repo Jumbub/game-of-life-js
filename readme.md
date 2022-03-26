@@ -47,6 +47,12 @@ First step towards some advanced JS.
 
 [01c5c850ccef4075d01441983a55cae6aa127c2a](https://github.com/Jumbub/game-of-snails/commit/01c5c850ccef4075d01441983a55cae6aa127c2a)
 
+### Closer towards the C++ code, first "real" benchmark
+
+This benchmark achieves the 30 renders per second requirement, and also adds a check to ensure the average never dips below 29.85.
+
+The code is also another couple steps closer to the C++ algorithm, because we're now storing our cells in the same data structure, and performing the same render calculations.
+
 ## Interesting findings
 
 ### Doing C-like integer division

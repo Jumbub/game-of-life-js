@@ -53,14 +53,13 @@ export const next = (board: Board) => {
 };
 
 export const startNextBoardLoop = (meta: Meta & { loop?: () => void }) => {
-  next(meta.board);
-  meta.generations++;
+  const loop = () => {
+    next(meta.board);
+    meta.generations++;
 
-  if (meta.generations < meta.maxGenerations) {
-    if (!meta.loop)
-      meta.loop = () => {
-        startNextBoardLoop(meta);
-      };
-    setTimeout(meta.loop, 0);
-  } else meta.onDone(meta);
+    if (meta.generations < meta.maxGenerations) {
+      setTimeout(loop, 0);
+    }
+  };
+  setTimeout(loop, 0);
 };
