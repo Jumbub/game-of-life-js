@@ -37,7 +37,7 @@ export const next = (board: Board) => {
 
   const size = board.width * board.height;
 
-  board.outSkip.fill(SKIP);
+  board.outSkip.fill(DONT_SKIP);
 
   let i = 0;
   while (i < size) {

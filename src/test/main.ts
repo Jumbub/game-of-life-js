@@ -18,7 +18,7 @@ const passed = (status: null | true | false) => {
       document.body.style.backgroundColor = 'darkRed';
       break;
     default:
-      document.body.style.backgroundColor = 'darkYellow';
+      document.body.style.backgroundColor = 'yellow';
   }
 };
 
@@ -34,7 +34,7 @@ const compare = async (label: string, board: Board, data: string) => {
     passed(false);
     throw new Error(`${label} failed...`);
   }
-  await sleep(1);
+  await sleep(10);
 };
 
 const runGenerations = (n: number, board: Board) => {
