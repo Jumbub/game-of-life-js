@@ -1,8 +1,8 @@
 # Game of Snails
 
-fiNDINg WAYs TO oPtiMisE ConwAY'S GamE of LIFE.
+Attempting to match C++/SFML performance with JS/Chrome.
 
-- [C++ implementation of same algorithm](https://github.com/Jumbub/game-of-speed)
+- [The C++ implementation](https://github.com/Jumbub/game-of-speed)
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
 
