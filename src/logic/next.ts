@@ -62,6 +62,5 @@ export const startNextBoardLoop = (meta: Meta & { loop?: () => void }) => {
         startNextBoardLoop(meta);
       };
     setTimeout(meta.loop, 0);
-    // requestAnimationFrame(meta.loop);
   } else meta.onDone(meta);
 };
