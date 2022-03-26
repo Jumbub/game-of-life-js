@@ -1,3 +1,5 @@
+import { littleEndian } from './endianness.js';
+
 export type Board = {
   input: ImageData;
   output: ImageData;
@@ -22,6 +24,11 @@ export const CELL_COLOR = [DEAD_COLOR, ALIVE_COLOR] as const;
 export const SKIP_MULTIPLYER = 2;
 
 export const newBoard = (viewWidth: number, viewHeight: number) => {
+  if (!littleEndian()) {
+    alert('Browser uses incorrect bit endianness');
+    throw new Error('git gud');
+  }
+
   const width = viewWidth + 2;
   const height = viewHeight + 2;
 
