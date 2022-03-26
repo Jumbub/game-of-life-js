@@ -38,7 +38,8 @@ export const setup = (
   return meta;
 };
 
-export const run = ({ board, context, maxGenerations, rendersMinimumMilliseconds, onDone }: Meta) => {
+export const run = (meta: Meta) => {
+  const { board, context, rendersMinimumMilliseconds, onDone } = meta;
   let computedGenerations = 0;
 
   const renderLoop = async () => {
@@ -47,7 +48,7 @@ export const run = ({ board, context, maxGenerations, rendersMinimumMilliseconds
     render(board, context);
     document.title = String(computedGenerations);
 
-    if (computedGenerations <= maxGenerations)
+    if (computedGenerations <= meta.maxGenerations)
       setTimeout(renderLoop, rendersMinimumMilliseconds - renderStartTime + Date.now());
   };
 
@@ -55,7 +56,7 @@ export const run = ({ board, context, maxGenerations, rendersMinimumMilliseconds
     next(board);
 
     computedGenerations++;
-    if (computedGenerations < maxGenerations) setTimeout(nextLoop, 0);
+    if (computedGenerations < meta.maxGenerations) setTimeout(nextLoop, 0);
     else onDone();
   };
 
