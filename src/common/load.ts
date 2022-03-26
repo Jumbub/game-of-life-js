@@ -1,7 +1,6 @@
 import { Board, DONT_SKIP } from '../logic/board.js';
 
 export const load = (board: Board, data: string) => {
-  console.log(data.length, board.width * board.height);
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data loader');
 
   for (let i = 0; i < data.length; i++) {
