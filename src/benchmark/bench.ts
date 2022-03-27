@@ -2,7 +2,7 @@ import { load, match } from '../common/load.js';
 import { Meta, run, setup } from '../graphics/loop.js';
 import { BENCHMARK_2000 } from '../test/benchmark_2000.js';
 
-export const bench = (
+export const bench = async (
   data: string,
   width: number,
   height: number,
@@ -38,7 +38,7 @@ ${validOutput || validParams || validRps}`;
     console.log(report);
   };
 
-  const meta = setup(width, height, maxGenerations, 1000 / rendersPerSecond, onDone);
+  const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, onDone);
   load(meta.board, data);
 
   const start = performance.now();

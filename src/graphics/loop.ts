@@ -14,32 +14,40 @@ export type Meta = {
   onDone: (meta: Meta) => void;
 };
 
-export const setup = (
+export const setup = async (
   viewWidth: number,
   viewHeight: number,
   maxGenerations: number,
   rendersMinimumMilliseconds: number,
   onDone: (meta: Meta) => void,
-): Meta => {
-  const board = newBoard(viewWidth, viewHeight);
-  const context = newContext(viewWidth, viewHeight);
-  const primaryWorker = new Worker('/logic/primaryWorker.js', { name: 'worker-primary', type: 'module' });
-  const generationsAndMax = new Uint32Array(new SharedArrayBuffer(8));
-  generationsAndMax[0] = 0;
-  generationsAndMax[1] = maxGenerations === Infinity ? Math.pow(2, 32) : maxGenerations;
-  const meta: Meta = {
-    board,
-    context,
-    generationsAndMax,
-    rendersMinimumMilliseconds,
-    onDone,
-    renders: 0,
-    primaryWorker,
-  };
+): Promise<Meta> => {
+  return new Promise<Meta>((resolve, reject) => {
+    // Create board, context, and other meta
+    const board = newBoard(viewWidth, viewHeight);
+    const context = newContext(viewWidth, viewHeight);
+    const generationsAndMax = new Uint32Array(new SharedArrayBuffer(8));
+    generationsAndMax[0] = 0;
+    generationsAndMax[1] = maxGenerations === Infinity ? Math.pow(2, 32) : maxGenerations;
+    const meta: Omit<Meta, 'primaryWorker'> = {
+      board,
+      context,
+      generationsAndMax,
+      rendersMinimumMilliseconds,
+      onDone,
+      renders: 0,
+    };
 
-  handleMouse(board);
+    // Interactivity
+    handleMouse(board);
+    onkeydown = () => (generationsAndMax[1] = 0);
 
-  return meta;
+    // Boot primary worker, and only resolve setup when it's ready
+    const primaryWorker = new Worker('/logic/primaryWorker.js', { name: 'worker-primary', type: 'module' });
+    primaryWorker.addEventListener('message', ({ data: status }: MessageEvent<string>) => {
+      if (status !== 'ready') reject('Primary worker failed to initialize');
+      else resolve({ ...meta, primaryWorker });
+    });
+  });
 };
 
 export const run = (meta: Meta) => {

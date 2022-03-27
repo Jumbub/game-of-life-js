@@ -7,15 +7,15 @@ export type StartMessage = {
   board: Board;
 };
 
-{
-  addEventListener('message', (event: MessageEvent<StartMessage>) => {
-    const {
-      board: { width },
-      beginI,
-      endI,
-    } = event.data;
-    const { input, output, inSkips, outSkips } = getBoardIo(event.data.board);
-    nextBoardSection(beginI, endI, width, input, output, inSkips, outSkips);
-    postMessage(1);
-  });
-}
+addEventListener('message', (event: MessageEvent<StartMessage>) => {
+  const {
+    board: { width },
+    beginI,
+    endI,
+  } = event.data;
+  const { input, output, inSkips, outSkips } = getBoardIo(event.data.board);
+  nextBoardSection(beginI, endI, width, input, output, inSkips, outSkips);
+  postMessage(1);
+});
+
+postMessage('ready');
