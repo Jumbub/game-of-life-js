@@ -86,6 +86,12 @@ Wait for workers to mark themselves as "ready" before starting computations.
 
 [e19df8b319c81b59b05933bd3a60cf74d3b0b9fb](https://github.com/Jumbub/game-of-snails/commit/e19df8b319c81b59b05933bd3a60cf74d3b0b9fb)
 
+### Using Atomics to communicate, rather than messages (~10.75s)
+
+The improvement is quite small, but is consistently faster than messaging.
+
+[301c1fb959d2d438fc6d6c8dfe0111e11821b39c](https://github.com/Jumbub/game-of-snails/commit/301c1fb959d2d438fc6d6c8dfe0111e11821b39c)
+
 <br/>
 
 ## Interesting findings
