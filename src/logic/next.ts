@@ -64,32 +64,33 @@ const createSegments = (segments: number, width: number, height: number) => {
 
 export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[]) => {
   const segments = createSegments(workers.length, board.width, board.height);
-  const startNextBoard = () => {
+  const segmentsCount = new Int32Array(new SharedArrayBuffer(4));
+  const segmentsDone = new Int32Array(new SharedArrayBuffer(4));
+
+  const nextBoardLoop = () => {
+    Atomics.store(segmentsCount, 0, 0);
+    Atomics.store(segmentsDone, 0, 0);
+
     flipBoardIo(board);
     board.skips[1 - board.skipsInput[0]].fill(SKIP);
     workers.forEach((worker, i) => {
-      const message: StartMessage = { ...segments[i], board };
+      const message: StartMessage = {
+        ...segments[i],
+        board,
+        segmentsCount,
+        segmentsTotal: segments.length,
+        segmentsDone,
+      };
       worker.postMessage(message);
     });
-  };
 
-  const onWorkersFinished = () => {
+    // Wait for segments to be completed
+    Atomics.wait(segmentsDone, 0, 0, Infinity);
+
     assignBoardPadding(board);
     generationsAndMax[0]++;
-    if (generationsAndMax[0] < generationsAndMax[1]) startNextBoard();
+    if (generationsAndMax[0] < generationsAndMax[1]) nextBoardLoop();
   };
 
-  // Setup listeners
-  let completions = 0;
-  workers.forEach(worker => {
-    const onWorkerFinished = () => {
-      if (++completions === workers.length) {
-        completions = 0;
-        onWorkersFinished();
-      }
-    };
-    worker.addEventListener('message', onWorkerFinished);
-  });
-
-  startNextBoard();
+  nextBoardLoop();
 };
