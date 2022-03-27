@@ -62,7 +62,7 @@ This benchmark also adds a requirement that the renders per second never drops b
 
 Create a single worker which listens for computation requests from the primary thread.
 
-[COMMIT](TODO)
+[13ce69fd81bf3b28271993629645bef6896d78b4](https://github.com/Jumbub/game-of-snails/commit/13ce69fd81bf3b28271993629645bef6896d78b4)
 
 <br/>
 
