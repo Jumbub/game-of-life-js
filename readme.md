@@ -74,13 +74,11 @@ Allowing the computation scheduling to run synchronously (removed `setTimeout(jo
 
 ### Mutiple workers computing simultaneously (~11.5s)
 
-Currently most optimal with 16 workers, but I suspect that number will come back down to 4 once I've optimised everything.
+Currently most optimal with 16 workers, but I suspect that number will come back down to 4 once I've optimised more operations.
 
-```
 4 threads: 12.70s
 8 threads: 11.74s
 16 threads: 11.45s
-```
 
 [97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-snails/commit/97067de019fc6045240d157da1ca130c77dd27dd)
 
