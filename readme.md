@@ -2,7 +2,9 @@
 
 Conway's Game of Life, as fast as possible without hashing.
 
-More specifically, an experiment to see how close to [C++/SFML performance](https://github.com/Jumbub/game-of-speed) you can achieve in JS/Chrome with the same algorithm.
+More specifically, an experiment to see how close to [C++/SFML performance](https://github.com/Jumbub/game-of-speed) you can achieve in JS/Chrome.
+
+The algorithm implemented here is a direct translation from the C++ equivilant.
 
 - **[The equivilantly implemented C++ application](https://github.com/Jumbub/game-of-speed)**
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
