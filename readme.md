@@ -109,7 +109,7 @@ const data = new SharedArrayBuffer(1024)
 postMessage({data})
 ```
 
-> Note: ["a side effect to the block in one agent will eventually become visible in the other agent"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#allocating_and_sharing_memory)
+> Note: ["a side effect to the block in one agent will **eventually** become visible in the other agent"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#allocating_and_sharing_memory)
 
 ### SharedArrayBuffer restrictions
 
