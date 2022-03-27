@@ -1,4 +1,4 @@
-name: Deploy changes
+name: deploy
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy changes
+    name: deploy
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2

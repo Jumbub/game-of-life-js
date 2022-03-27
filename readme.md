@@ -1,5 +1,7 @@
 # [JS] Game of Life
 
+[![deploy](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml/badge.svg)](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml)
+
 Attempting to match C++/SFML performance in JS/Chrome.
 
 - **[The equivilantly implemented C++ application](https://github.com/Jumbub/game-of-speed)**
