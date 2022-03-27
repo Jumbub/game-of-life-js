@@ -64,6 +64,14 @@ Create a single worker which listens for computation requests from the primary t
 
 [13ce69fd81bf3b28271993629645bef6896d78b4](https://github.com/Jumbub/game-of-snails/commit/13ce69fd81bf3b28271993629645bef6896d78b4)
 
+### Move the computation loop into a dedicated worker (~19s)
+
+Create a dedicated worker for running the loop.
+
+Allowing the computation scheduling to run synchronously (removed `setTimeout(job, 0)`).
+
+[e67e46a797115aca4bd168210c0201507baa9c41](https://github.com/Jumbub/game-of-snails/commit/e67e46a797115aca4bd168210c0201507baa9c41)
+
 <br/>
 
 ## Interesting findings
