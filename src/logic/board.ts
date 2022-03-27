@@ -30,6 +30,10 @@ export const newBoard = (viewWidth: number, viewHeight: number) => {
     alert('Browser uses incorrect bit endianness');
     throw new Error('git gud');
   }
+  if (!crossOriginIsolated) {
+    alert('Page is not cross origin isolated');
+    throw new Error('git gud');
+  }
 
   const width = viewWidth + 2;
   const height = viewHeight + 2;

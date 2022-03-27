@@ -82,6 +82,35 @@ Create a single worker which listens for computation requests from the primary t
 
 The speed at this [commit](TODO) went from 35.98 gens/sec to 3.7 seconds _just_ by moving the same work to a worker.
 
+### Sharing data with workers
+
+When sending messages to workers, you have 3 options.
+
+1) Pass by copy
+
+```
+const data = new ArrayBuffer(1024)
+postMessage({data})
+```
+
+2) Pass by reference & lose ownership
+
+```
+const data = new ArrayBuffer(1024)
+postMessage({data}, [data])
+```
+
+> Note: `data` is now an array buffer of length 0
+
+2) Pass by reference
+
+```
+const data = new SharedArrayBuffer(1024)
+postMessage({data})
+```
+
+> Note: ["a side effect to the block in one agent will eventually become visible in the other agent"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#allocating_and_sharing_memory)
+
 ### SharedArrayBuffer restrictions
 
 In Chrome, this feature requires the page is loaded with the following headers:
