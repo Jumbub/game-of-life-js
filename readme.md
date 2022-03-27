@@ -93,7 +93,7 @@ const data = new ArrayBuffer(1024)
 postMessage({data})
 ```
 
-2) Pass by reference & lose ownership
+2) Pass by reference & transfer ownership
 
 ```
 const data = new ArrayBuffer(1024)
