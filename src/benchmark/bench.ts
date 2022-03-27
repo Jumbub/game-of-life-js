@@ -15,8 +15,8 @@ export const bench = (
     const valid = rps > rendersPerSecond * 0.999 ? '' : '*TOO FEW RENDERS TO BE CONSIDERED VALID*';
 
     const report = `seconds: ${seconds.toFixed(2)}s
-generations: ${meta.generations}
-generations/second: ${(meta.generations / seconds).toFixed(2)}
+generations: ${meta.generationsAndMax[0]}
+generations/second: ${(meta.generationsAndMax[0] / seconds).toFixed(2)}
 renders/second: ${rps.toFixed(2)}
 ${valid}`;
 

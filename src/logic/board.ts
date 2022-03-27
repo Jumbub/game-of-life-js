@@ -1,11 +1,11 @@
 import { littleEndian } from './endianness.js';
 
 export type Board = {
-  input: Uint8Array;
-  output: Uint8Array;
+  cells: [Cells, Cells];
+  skips: [Skips, Skips];
 
-  inSkip: Skips;
-  outSkip: Skips;
+  cellsInput: Uint32Array; // [index of cells]
+  skipsInput: Uint32Array; // [index of skips]
 
   width: number;
   height: number;
@@ -38,19 +38,31 @@ export const newBoard = (viewWidth: number, viewHeight: number) => {
   const width = viewWidth + 2;
   const height = viewHeight + 2;
 
-  const makeZeros = () => {
-    const buffer = new SharedArrayBuffer(width * height);
-    return new Uint8Array(buffer);
-  };
+  const cells = () => new Uint8Array(new SharedArrayBuffer(width * height));
+  const sharedNumber = () => new Uint32Array(new SharedArrayBuffer(4));
 
   const board: Board = {
     width,
     height,
-    input: makeZeros(),
-    output: makeZeros(),
-    inSkip: makeZeros(),
-    outSkip: makeZeros(),
+    cellsInput: sharedNumber(),
+    cells: [cells(), cells()],
+    skipsInput: sharedNumber(),
+    skips: [cells(), cells()],
   };
 
   return board;
+};
+
+export const flipBoardIo = (board: Board) => {
+  board.cellsInput[0] = 1 - board.cellsInput[0];
+  board.skipsInput[0] = 1 - board.skipsInput[0];
+};
+
+export const getBoardIo = (board: Board) => {
+  return {
+    input: board.cells[board.cellsInput[0]],
+    output: board.cells[1 - board.cellsInput[0]],
+    inSkips: board.skips[board.skipsInput[0]],
+    outSkips: board.skips[1 - board.skipsInput[0]],
+  };
 };

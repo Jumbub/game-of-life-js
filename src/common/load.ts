@@ -1,20 +1,22 @@
-import { Board, DONT_SKIP } from '../logic/board.js';
+import { Board, DONT_SKIP, getBoardIo } from '../logic/board.js';
 
 export const load = (board: Board, data: string) => {
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data loader');
+  const { input, output, inSkips, outSkips } = getBoardIo(board);
 
   for (let i = 0; i < data.length; i++) {
-    board.input[i] = board.output[i] = parseInt(data[i]);
+    input[i] = output[i] = parseInt(data[i]);
   }
 
-  board.inSkip.fill(DONT_SKIP);
-  board.outSkip.fill(DONT_SKIP);
+  inSkips.fill(DONT_SKIP);
+  outSkips.fill(DONT_SKIP);
 };
 
 export const match = (board: Board, data: string) => {
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data matcher');
+  const { output } = getBoardIo(board);
 
-  return board.output.every((value, i) => value == parseInt(data[i]));
+  return output.every((value, i) => value == parseInt(data[i]));
 };
 
 export const random = (size: number) => {
