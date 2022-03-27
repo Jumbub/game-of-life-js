@@ -1,4 +1,5 @@
 import { load, match } from '../common/load.js';
+import { print } from '../common/print.js';
 import { Meta, run, setup } from '../graphics/loop.js';
 import { BENCHMARK_2000 } from '../test/benchmark_2000.js';
 
@@ -27,14 +28,7 @@ generations/second: ${(meta.generationsAndMax[0] / seconds).toFixed(2)}
 renders/second: ${rps.toFixed(2)}
 ${validOutput || validParams || validRps}`;
 
-    const result = document.createElement('div');
-    result.style.position = 'fixed';
-    result.style.padding = '10px';
-    result.style.backgroundColor = 'black';
-    result.style.color = 'white';
-    result.innerHTML = report.replace(/\n/g, '<br/>');
-    document.body.append(result);
-
+    print(report);
     console.log(report);
   };
 

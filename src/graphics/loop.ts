@@ -67,6 +67,8 @@ export const run = (meta: Meta) => {
     }
   }, meta.rendersMinimumMilliseconds);
 
-  const message: StartMessage = { board: meta.board, generationsAndMax: meta.generationsAndMax };
-  meta.primaryWorker.postMessage(message);
+  if (meta.generationsAndMax[0] < meta.generationsAndMax[1]) {
+    const message: StartMessage = { board: meta.board, generationsAndMax: meta.generationsAndMax };
+    meta.primaryWorker.postMessage(message);
+  }
 };

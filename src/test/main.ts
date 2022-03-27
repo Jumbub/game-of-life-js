@@ -1,7 +1,8 @@
 import { BENCHMARK } from '../common/benchmark.js';
 import { load, match } from '../common/load.js';
+import { print } from '../common/print.js';
 import { sleep } from '../common/sleep.js';
-import { run, setup } from '../graphics/loop.js';
+import { Meta, run, setup } from '../graphics/loop.js';
 import { Board, flipBoardIo, getBoardIo, newBoard } from '../logic/board.js';
 import { nextBoardSection } from '../logic/next.js';
 import { assignBoardPadding } from '../logic/padding.js';
@@ -24,59 +25,42 @@ const passed = (status: null | true | false) => {
   }
 };
 
-const print = (label: string) => {
-  document.body.append(document.createTextNode(label));
-};
-
 const compare = async (label: string, board: Board, data: string) => {
-  if (match(board, data)) {
-    print(`${label} passed...`);
-  } else {
+  if (!match(board, data)) {
     print(`${label} failed...`);
-    passed(false);
     throw new Error(`${label} failed...`);
   }
-  await sleep(10);
 };
 
-const runGenerations = (n: number, board: Board) => {
-  for (let i = 0; i < n; i++) {
-    flipBoardIo(board);
-    const { input, output, inSkips, outSkips } = getBoardIo(board);
-    nextBoardSection(
-      board.width + 1,
-      board.width * (board.height - 1) - 1,
-      board.width,
-      input,
-      output,
-      inSkips,
-      outSkips,
-    );
-    assignBoardPadding(board);
-    document.title = String(i);
-  }
+const runTest = (meta: Meta, maxGenerations: number, data: string, next: () => void) => {
+  meta.generationsAndMax[1] = maxGenerations;
+  run({
+    ...meta,
+    onDone: async () => {
+      await compare(`benchmark ${maxGenerations}`, meta.board, data);
+      next();
+    },
+  });
 };
 
 (async () => {
-  passed(null);
-  const board = newBoard(2560, 1440);
-  load(board, BENCHMARK);
-  await compare('benchmark 0', board, BENCHMARK);
-  runGenerations(1, board);
-  await compare('benchmark 1', board, BENCHMARK_1);
-  runGenerations(1, board);
-  await compare('benchmark 2', board, BENCHMARK_2);
-  runGenerations(1, board);
-  await compare('benchmark 3', board, BENCHMARK_3);
-  runGenerations(97, board);
-  await compare('benchmark 100', board, BENCHMARK_100);
-  passed(true);
-})();
+  const meta = await setup(2560, 1440, 0, 1000, async meta => {
+    await compare('benchmark 0', meta.board, BENCHMARK);
 
-// (async () => {
-//   const meta = setup(2560, 1440, 2000, 1000 / 1, meta => {
-//     alert(match(meta.board, BENCHMARK_2000) ? 'success' : 'failure');
-//   });
-//   load(meta.board, BENCHMARK);
-//   run(meta);
-// })();
+    runTest(meta, 1, BENCHMARK_1, () => {
+      runTest(meta, 2, BENCHMARK_2, () => {
+        runTest(meta, 3, BENCHMARK_3, () => {
+          runTest(meta, 100, BENCHMARK_100, () => {
+            runTest(meta, 2000, BENCHMARK_2000, () => {
+              document.title = 'passed';
+              print('passed');
+            });
+          });
+        });
+      });
+    });
+  });
+
+  load(meta.board, BENCHMARK);
+  run(meta);
+})();
