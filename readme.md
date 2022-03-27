@@ -1,4 +1,4 @@
-# [JS] Game of Life
+# Game of Life [JS]
 
 Attempting to match C++/SFML performance in JS/Chrome.
 
