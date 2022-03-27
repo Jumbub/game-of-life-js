@@ -80,6 +80,12 @@ Currently most optimal with 16 workers, but I suspect that number will come back
 
 [97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-snails/commit/97067de019fc6045240d157da1ca130c77dd27dd)
 
+### Mutiple workers computing simultaneously (~11s)
+
+Wait for workers to mark themselves as "ready" before starting computations.
+
+[e19df8b319c81b59b05933bd3a60cf74d3b0b9fb](https://github.com/Jumbub/game-of-snails/commit/e19df8b319c81b59b05933bd3a60cf74d3b0b9fb)
+
 <br/>
 
 ## Interesting findings
