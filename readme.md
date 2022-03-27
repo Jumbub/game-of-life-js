@@ -1,10 +1,12 @@
-# Game of Snails
+# [JS] Game of Life
 
-Attempting to match C++/SFML performance with JS/Chrome.
+Attempting to match C++/SFML performance in JS/Chrome.
 
-- [The C++ implementation](https://github.com/Jumbub/game-of-speed)
+- **[The equivilantly implemented C++ application](https://github.com/Jumbub/game-of-speed)**
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
+
+The goal of this repository is to achieve performance as close as possible to [game-of-life-cpp](https://github.com/Jumbub/game-of-life-cpp) without changing the algorithm at all.
 
 <br/>
 
@@ -40,13 +42,13 @@ http://localhost:8080/benchmark
 
 Naive and simple manual transpilation of the [C++ implementation](https://github.com/Jumbub/game-of-speed) to Typescript, without any advanced Javascript (typed arrays, workers, etc).
 
-[c15cae4d00beb59f5e6e50f495a323eca3f24eb5](https://github.com/Jumbub/game-of-snails/commit/9227c6a55ede200a1b6fe827c93010963e704f3d)
+[c15cae4d00beb59f5e6e50f495a323eca3f24eb5](https://github.com/Jumbub/game-of-life-js/commit/9227c6a55ede200a1b6fe827c93010963e704f3d)
 
 ### Use smaller typed arrays for skip cells (~53s)
 
 First attempt at using typed arrays, using Uint8Arrays to store the skip data.
 
-[01c5c850ccef4075d01441983a55cae6aa127c2a](https://github.com/Jumbub/game-of-snails/commit/01c5c850ccef4075d01441983a55cae6aa127c2a)
+[01c5c850ccef4075d01441983a55cae6aa127c2a](https://github.com/Jumbub/game-of-life-js/commit/01c5c850ccef4075d01441983a55cae6aa127c2a)
 
 ### Use smaller typed arrays for data cells (~37s)
 
@@ -54,13 +56,13 @@ Use Uint8Array's for storing state of a cell, then create the Uint32Array requir
 
 This benchmark also adds a requirement that the renders per second never drops below 29.97.
 
-[1263580a75a6ac861616411fddc1a9605e995292](https://github.com/Jumbub/game-of-snails/commit/1263580a75a6ac861616411fddc1a9605e995292)
+[1263580a75a6ac861616411fddc1a9605e995292](https://github.com/Jumbub/game-of-life-js/commit/1263580a75a6ac861616411fddc1a9605e995292)
 
 ### Moving the computation into a worker (~28s)
 
 Create a single worker which listens for computation requests from the primary thread.
 
-[13ce69fd81bf3b28271993629645bef6896d78b4](https://github.com/Jumbub/game-of-snails/commit/13ce69fd81bf3b28271993629645bef6896d78b4)
+[13ce69fd81bf3b28271993629645bef6896d78b4](https://github.com/Jumbub/game-of-life-js/commit/13ce69fd81bf3b28271993629645bef6896d78b4)
 
 ### Move the computation loop into a dedicated worker (~19s)
 
@@ -68,7 +70,7 @@ Create a dedicated worker for running the loop.
 
 Allowing the computation scheduling to run synchronously (removed `setTimeout(job, 0)`).
 
-[e67e46a797115aca4bd168210c0201507baa9c41](https://github.com/Jumbub/game-of-snails/commit/e67e46a797115aca4bd168210c0201507baa9c41)
+[e67e46a797115aca4bd168210c0201507baa9c41](https://github.com/Jumbub/game-of-life-js/commit/e67e46a797115aca4bd168210c0201507baa9c41)
 
 ### Mutiple workers computing simultaneously (~11.5s)
 
@@ -78,19 +80,19 @@ Currently most optimal with 16 workers, but I suspect that number will come back
 8 threads: 11.74s
 16 threads: 11.45s
 
-[97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-snails/commit/97067de019fc6045240d157da1ca130c77dd27dd)
+[97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-life-js/commit/97067de019fc6045240d157da1ca130c77dd27dd)
 
 ### Mutiple workers computing simultaneously (~11s)
 
 Wait for workers to mark themselves as "ready" before starting computations.
 
-[e19df8b319c81b59b05933bd3a60cf74d3b0b9fb](https://github.com/Jumbub/game-of-snails/commit/e19df8b319c81b59b05933bd3a60cf74d3b0b9fb)
+[e19df8b319c81b59b05933bd3a60cf74d3b0b9fb](https://github.com/Jumbub/game-of-life-js/commit/e19df8b319c81b59b05933bd3a60cf74d3b0b9fb)
 
 ### Using Atomics to communicate, rather than messages (~10.75s)
 
 The improvement is quite small, but is consistently faster than messaging.
 
-[301c1fb959d2d438fc6d6c8dfe0111e11821b39c](https://github.com/Jumbub/game-of-snails/commit/301c1fb959d2d438fc6d6c8dfe0111e11821b39c)
+[301c1fb959d2d438fc6d6c8dfe0111e11821b39c](https://github.com/Jumbub/game-of-life-js/commit/301c1fb959d2d438fc6d6c8dfe0111e11821b39c)
 
 <br/>
 
