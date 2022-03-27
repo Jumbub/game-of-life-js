@@ -1,14 +1,16 @@
-# [JS] Game of Life
+# Game of Life (JS)
 
 [![deploy](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml/badge.svg)](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml)
 
-Attempting to match C++/SFML performance in JS/Chrome.
+Conway's Game of Life, as fast as possible _without hashing_.
 
-- **[The equivilantly implemented C++ application](https://github.com/Jumbub/game-of-speed)**
+Transpiling a C++ algorithm into TypeScript (by hand), and comparing its performance.
+
+> At this point the C++ and TypeScript are largely identical (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/readme/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
+
+- **[C++ implementation](https://github.com/Jumbub/game-of-speed)**
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
-
-The goal of this repository is to achieve performance as close as possible to [game-of-life-cpp](https://github.com/Jumbub/game-of-life-cpp) without changing the algorithm at all.
 
 <br/>
 
