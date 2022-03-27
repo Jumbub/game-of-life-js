@@ -1,5 +1,7 @@
 # Game of Life (JS)
 
+[![deploy](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml/badge.svg)](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml)
+
 Conway's Game of Life, with performance as close as possible to an equivilant C++ algorithm.
 
 > The C++ algorithm and code structure is identical (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/readme/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
