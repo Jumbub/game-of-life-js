@@ -45,14 +45,12 @@ Naive and simple manual transpilation of the [C++ implementation](https://github
 ### Use smaller typed arrays for skip cells (~53s)
 
 First attempt at using typed arrays, using Uint8Arrays to store the skip data.
-(matching how the c++ implementation does it)
 
 [01c5c850ccef4075d01441983a55cae6aa127c2a](https://github.com/Jumbub/game-of-snails/commit/01c5c850ccef4075d01441983a55cae6aa127c2a)
 
 ### Use smaller typed arrays for data cells (~37s)
 
 Use Uint8Array's for storing state of a cell, then create the Uint32Array required for rendering at render time.
-(matching how the c++ implementation does it)
 
 This benchmark also adds a requirement that the renders per second never drops below 29.97.
 
