@@ -1,12 +1,12 @@
 # Game of Life (in JS)
 
-Attempting to match C++/SFML performance in JS/Chrome.
+Conway's Game of Life, as fast as possible without hashing.
+
+More specifically, an experiment to see how close to [C++/SFML performance](https://github.com/Jumbub/game-of-speed) you can achieve in JS/Chrome with the same algorithm.
 
 - **[The equivilantly implemented C++ application](https://github.com/Jumbub/game-of-speed)**
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
-
-The goal of this repository is to achieve performance as close as possible to [game-of-life-cpp](https://github.com/Jumbub/game-of-life-cpp) without changing the algorithm at all.
 
 <br/>
 
