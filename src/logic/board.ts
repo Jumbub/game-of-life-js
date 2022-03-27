@@ -34,16 +34,18 @@ export const newBoard = (viewWidth: number, viewHeight: number) => {
   const width = viewWidth + 2;
   const height = viewHeight + 2;
 
-  const newCells = () => new Uint8Array(width * height).fill(DEAD);
-  const newSkips = () => new Uint8Array(width * height).fill(DONT_SKIP);
+  const makeZeros = () => {
+    const buffer = new SharedArrayBuffer(width * height);
+    return new Uint8Array(buffer);
+  };
 
   const board: Board = {
     width,
     height,
-    input: newCells(),
-    output: newCells(),
-    inSkip: newSkips(),
-    outSkip: newSkips(),
+    input: makeZeros(),
+    output: makeZeros(),
+    inSkip: makeZeros(),
+    outSkip: makeZeros(),
   };
 
   return board;

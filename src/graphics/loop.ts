@@ -7,6 +7,7 @@ import { render } from './render.js';
 export type Meta = {
   board: Board;
   context: CanvasRenderingContext2D;
+  workers: Worker[];
   maxGenerations: number;
   generations: number;
   renders: number;
@@ -23,6 +24,9 @@ export const setup = (
 ): Meta => {
   const board = newBoard(viewWidth, viewHeight);
   const context = newContext(viewWidth, viewHeight);
+  const workers = Array(1)
+    .fill(0)
+    .map((_, i) => new Worker('/logic/worker.js', { name: 'worker', type: 'module' }));
   const meta: Meta = {
     board,
     context,
@@ -31,6 +35,7 @@ export const setup = (
     onDone,
     generations: 0,
     renders: 0,
+    workers,
   };
 
   window.addEventListener('blur', () => {
@@ -51,8 +56,8 @@ export const run = (meta: Meta) => {
     meta.renders++;
 
     if (meta.generations >= meta.maxGenerations) {
-      meta.onDone(meta);
       clearInterval(interval);
+      meta.onDone(meta);
       return;
     }
   }, meta.rendersMinimumMilliseconds);

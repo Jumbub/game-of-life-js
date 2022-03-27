@@ -20,6 +20,14 @@ generations/second: ${(meta.generations / seconds).toFixed(2)}
 renders/second: ${rps.toFixed(2)}
 ${valid}`;
 
+    const result = document.createElement('div');
+    result.style.position = 'fixed';
+    result.style.padding = '10px';
+    result.style.backgroundColor = 'black';
+    result.style.color = 'white';
+    result.innerHTML = report.replace(/\n/g, '<br/>');
+    document.body.append(result);
+
     console.log(report);
   };
 
