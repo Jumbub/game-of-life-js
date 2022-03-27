@@ -1,4 +1,5 @@
 import { Board, DONT_SKIP, getBoardIo } from '../logic/board.js';
+import { assignBoardPadding } from '../logic/padding.js';
 
 export const load = (board: Board, data: string) => {
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data loader');
@@ -10,13 +11,15 @@ export const load = (board: Board, data: string) => {
 
   inSkips.fill(DONT_SKIP);
   outSkips.fill(DONT_SKIP);
+
+  assignBoardPadding(board);
 };
 
 export const match = (board: Board, data: string) => {
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data matcher');
   const { output } = getBoardIo(board);
 
-  return output.every((value, i) => value == parseInt(data[i]));
+  return output.every((value, i) => value === parseInt(data[i]));
 };
 
 export const random = (size: number) => {

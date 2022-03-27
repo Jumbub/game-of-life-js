@@ -1,6 +1,5 @@
 import { Board, newBoard } from '../logic/board.js';
-import { next } from '../logic/next.js';
-import { GoMessage } from '../logic/primaryWorker.js';
+import { StartMessage } from '../logic/primaryWorker.js';
 import { newContext } from './context.js';
 import { handleMouse } from './mouse.js';
 import { render } from './render.js';
@@ -60,6 +59,6 @@ export const run = (meta: Meta) => {
     }
   }, meta.rendersMinimumMilliseconds);
 
-  const go: GoMessage = { ...meta.board, generationsAndMax: meta.generationsAndMax };
-  meta.primaryWorker.postMessage(go);
+  const message: StartMessage = { board: meta.board, generationsAndMax: meta.generationsAndMax };
+  meta.primaryWorker.postMessage(message);
 };

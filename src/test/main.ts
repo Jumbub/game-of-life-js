@@ -1,8 +1,10 @@
 import { BENCHMARK } from '../common/benchmark.js';
 import { load, match } from '../common/load.js';
 import { sleep } from '../common/sleep.js';
-import { Board, newBoard } from '../logic/board.js';
-import { next } from '../logic/next.js';
+import { run, setup } from '../graphics/loop.js';
+import { Board, flipBoardIo, getBoardIo, newBoard } from '../logic/board.js';
+import { nextBoardSection } from '../logic/next.js';
+import { assignBoardPadding } from '../logic/padding.js';
 import { BENCHMARK_1 } from './benchmark_1.js';
 import { BENCHMARK_100 } from './benchmark_100.js';
 import { BENCHMARK_2 } from './benchmark_2.js';
@@ -39,7 +41,18 @@ const compare = async (label: string, board: Board, data: string) => {
 
 const runGenerations = (n: number, board: Board) => {
   for (let i = 0; i < n; i++) {
-    next(board);
+    flipBoardIo(board);
+    const { input, output, inSkips, outSkips } = getBoardIo(board);
+    nextBoardSection(
+      board.width + 1,
+      board.width * (board.height - 1) - 1,
+      board.width,
+      input,
+      output,
+      inSkips,
+      outSkips,
+    );
+    assignBoardPadding(board);
     document.title = String(i);
   }
 };
@@ -57,7 +70,13 @@ const runGenerations = (n: number, board: Board) => {
   await compare('benchmark 3', board, BENCHMARK_3);
   runGenerations(97, board);
   await compare('benchmark 100', board, BENCHMARK_100);
-  runGenerations(1900, board);
-  await compare('benchmark 2000', board, BENCHMARK_2000);
   passed(true);
 })();
+
+// (async () => {
+//   const meta = setup(2560, 1440, 2000, 1000 / 1, meta => {
+//     alert(match(meta.board, BENCHMARK_2000) ? 'success' : 'failure');
+//   });
+//   load(meta.board, BENCHMARK);
+//   run(meta);
+// })();

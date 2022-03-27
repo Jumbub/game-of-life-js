@@ -1,35 +1,18 @@
 import { Board } from './board.js';
+import { startNextBoardLoop } from './next.js';
 
-export type GoMessage = Board & {
+export type StartMessage = {
   generationsAndMax: Uint32Array; // [computations, maxGenerations]
+  board: Board;
 };
 
 {
-  const workers = new Array(1)
-    .fill(1)
-    .map((_, i) => new Worker('/logic/worker.js', { name: `worker-${i}`, type: 'module' }));
+  // Create workers before "go" to avoid startup time affecting benchmark.
+  const workers = [...new Array(1)].map(
+    (_, i) => new Worker('/logic/segmentWorker.js', { name: `worker-${i}`, type: 'module' }),
+  );
 
-  console.log(workers);
-
-  const doGeneration = (data: GoMessage) => {
-    workers.forEach(worker => {
-      const handleWorkerFinished = () => {
-        worker.removeEventListener('message', handleWorkerFinished);
-
-        // Queue next job
-        // TODO: investigate removing the timeout because we're in another thread now!!!
-        data.generationsAndMax[0]++;
-        if (data.generationsAndMax[0] < data.generationsAndMax[1]) {
-          doGeneration(data);
-        }
-      };
-
-      worker.addEventListener('message', handleWorkerFinished);
-      worker.postMessage(data);
-    });
-  };
-
-  addEventListener('message', (event: MessageEvent<GoMessage>) => {
-    doGeneration(event.data);
+  addEventListener('message', (event: MessageEvent<StartMessage>) => {
+    startNextBoardLoop(event.data.generationsAndMax, event.data.board, workers);
   });
 }
