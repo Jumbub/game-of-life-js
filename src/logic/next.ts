@@ -39,8 +39,6 @@ export const nextBoardSection = (
   inSkip: Skips,
   outSkip: Skips,
 ) => {
-  outSkip.fill(SKIP);
-
   while (i < endI) {
     while (inSkip[Math.floor(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
@@ -54,11 +52,25 @@ export const nextBoardSection = (
   }
 };
 
+const createSegments = (segments: number, width: number, height: number) => {
+  let endI = width;
+  const segmentSize = (Math.floor(height / segments) + (height % segments)) * width;
+  return [...Array(segments)].map(() => {
+    const beginI = endI + 1;
+    endI = Math.min(width * (height - 1), endI + segmentSize);
+    return { beginI, endI: endI - 1 };
+  });
+};
+
 export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[]) => {
+  const segments = createSegments(workers.length, board.width, board.height);
   const startNextBoard = () => {
     flipBoardIo(board);
-    const message: StartMessage = { board };
-    workers.forEach(worker => worker.postMessage(message));
+    board.skips[1 - board.skipsInput[0]].fill(SKIP);
+    workers.forEach((worker, i) => {
+      const message: StartMessage = { ...segments[i], board };
+      worker.postMessage(message);
+    });
   };
 
   const onWorkersFinished = () => {

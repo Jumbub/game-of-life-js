@@ -1,4 +1,4 @@
-import { Board, DONT_SKIP, getBoardIo } from '../logic/board.js';
+import { Board, DONT_SKIP, getBoardIo, SKIP_MULTIPLYER } from '../logic/board.js';
 
 export const handleMouse = (board: Board) => {
   const { output, outSkips } = getBoardIo(board);
@@ -9,7 +9,7 @@ export const handleMouse = (board: Board) => {
       for (let xo = x - RADIUS; xo < x + RADIUS; xo++) {
         const i = yo * board.width + xo;
         output[i] = Math.round(Math.random());
-        outSkips[i] = DONT_SKIP;
+        outSkips[Math.floor(i / SKIP_MULTIPLYER)] = DONT_SKIP;
       }
     }
   };

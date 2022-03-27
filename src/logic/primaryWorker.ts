@@ -1,5 +1,6 @@
 import { Board } from './board.js';
 import { startNextBoardLoop } from './next.js';
+import { PROBABLY_OPTIMAL_WORKER_COUNT } from './workers.js';
 
 export type StartMessage = {
   generationsAndMax: Uint32Array; // [computations, maxGenerations]
@@ -8,7 +9,7 @@ export type StartMessage = {
 
 {
   // Create workers before "go" to avoid startup time affecting benchmark.
-  const workers = [...new Array(1)].map(
+  const workers = [...new Array(PROBABLY_OPTIMAL_WORKER_COUNT)].map(
     (_, i) => new Worker('/logic/segmentWorker.js', { name: `worker-${i}`, type: 'module' }),
   );
 

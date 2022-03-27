@@ -2,14 +2,20 @@ import { Board, getBoardIo } from './board.js';
 import { nextBoardSection } from './next.js';
 
 export type StartMessage = {
+  beginI: number;
+  endI: number;
   board: Board;
 };
 
 {
   addEventListener('message', (event: MessageEvent<StartMessage>) => {
-    const { width, height } = event.data.board;
+    const {
+      board: { width },
+      beginI,
+      endI,
+    } = event.data;
     const { input, output, inSkips, outSkips } = getBoardIo(event.data.board);
-    nextBoardSection(width + 1, width * (height - 1) - 1, width, input, output, inSkips, outSkips);
+    nextBoardSection(beginI, endI, width, input, output, inSkips, outSkips);
     postMessage(1);
   });
 }
