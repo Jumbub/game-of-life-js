@@ -8,7 +8,7 @@ export type StartMessage = {
 };
 
 // Create workers before "go" to avoid startup time affecting benchmark.
-const workers = [...new Array(PROBABLY_OPTIMAL_THREAD_COUNT)].map(
+const workers = [...new Array(PROBABLY_OPTIMAL_THREAD_COUNT - 1)].map(
   (_, i) => new Worker('/logic/segmentWorker.js', { name: `worker-${i}`, type: 'module' }),
 );
 
