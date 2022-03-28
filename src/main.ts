@@ -5,7 +5,7 @@ import { parseNumberOrDefault } from './parseNumberOrDefault.js';
 
 {
   const params = new URLSearchParams(location.search);
-  const maxGenerations = parseNumberOrDefault(params.get('maxGenerations'), Infinity);
+  const maxGenerations = parseNumberOrDefault(params.get('maxGenerations'), 999999);
   const rendersPerSecond = parseNumberOrDefault(params.get('rendersPerSecond'), 30);
 
   const meta = await setup(innerWidth, innerHeight, maxGenerations, 1000 / rendersPerSecond, () => {});
