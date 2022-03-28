@@ -86,7 +86,7 @@ Currently most optimal with 16 workers, but I suspect that number will come back
 
 [97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-life-js/commit/97067de019fc6045240d157da1ca130c77dd27dd)
 
-### Mutiple workers computing simultaneously (~11s)
+### Mutiple workers computing simultaneously (~10.4s)
 
 Wait for workers to mark themselves as "ready" before starting computations.
 
