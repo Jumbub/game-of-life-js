@@ -4,11 +4,12 @@
 
 Conway's Game of Life, as fast as possible _without hashing_.
 
-Transpiling a C++ algorithm into TypeScript (by hand), and comparing its performance.
+This repository documents transpiling (by hand) a [C++ application](https://github.com/Jumbub/game-of-speed) into TypeScript, and comparing its performance.
 
 > At this point the C++ and TypeScript are largely identical (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/readme/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
 
-- **[C++ implementation](https://github.com/Jumbub/game-of-speed)**
+- [Demo app - https://gameoflife.jamiebray.me](https://gameoflife.jamiebray.me/)
+- [Run the benchmark - https://gameoflife.jamiebray.me/benchmark](https://gameoflife.jamiebray.me/benchmark/)
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
 
