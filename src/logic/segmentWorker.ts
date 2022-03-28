@@ -1,31 +1,22 @@
+import { sleep } from '../common/sleep.js';
 import { Board, getBoardIo } from './board.js';
-import { nextBoardSection } from './next.js';
+import { nextBoardSection, processJobs } from './next.js';
 
-export type StartMessage = {
-  beginI: number;
-  endI: number;
+export type BootMessage = {
   board: Board;
-  segmentsCount: Int32Array;
-  segmentsTotal: number;
-  segmentsDone: Int32Array;
+  jobs: [beginI: number, endI: number][];
+  nextJob: Int32Array;
+  doneJobs: Int32Array;
+  allJobsDone: Int32Array;
 };
 
-addEventListener('message', (event: MessageEvent<StartMessage>) => {
-  const {
-    board: { width },
-    beginI,
-    endI,
-    segmentsCount,
-    segmentsTotal,
-    segmentsDone,
-  } = event.data;
-  const { input, output, inSkips, outSkips } = getBoardIo(event.data.board);
-  nextBoardSection(beginI, endI, width, input, output, inSkips, outSkips);
+addEventListener('message', async (event: MessageEvent<BootMessage>) => {
+  // Wait for "start scanning" message
+  const { board, jobs, nextJob, doneJobs, allJobsDone } = event.data;
 
-  const count = Atomics.add(segmentsCount, 0, 1);
-  if (count === segmentsTotal - 1) {
-    Atomics.store(segmentsDone, 0, 1);
-    Atomics.notify(segmentsDone, 0);
+  while (Atomics.wait(doneJobs, 0, jobs.length)) {
+    processJobs(board, jobs, nextJob, doneJobs, allJobsDone);
+    await sleep(10);
   }
 });
 
