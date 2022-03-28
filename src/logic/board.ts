@@ -23,7 +23,7 @@ export const DONT_SKIP = 0 as const;
 export type Skip = typeof SKIP | typeof DONT_SKIP;
 export type Skips = Uint8Array;
 
-export const SKIP_MULTIPLYER = 2;
+export const SKIP_MULTIPLYER = 8;
 
 export const newBoard = (viewWidth: number, viewHeight: number) => {
   if (!littleEndian()) {
