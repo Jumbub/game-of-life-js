@@ -68,11 +68,9 @@ export const processJobs = (
     nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
 
     const previousDoneCount = Atomics.add(doneJobs, 0, 1);
-    console.log('>', previousDoneCount);
     if (previousDoneCount === nJobs - 1) {
-      console.log('>>', previousDoneCount);
       // Notify that all workers are done
-      Atomics.store(allJobsDone, 0, 1); // TODO: is store necessary, or is assignment fine
+      allJobsDone[0] = 1;
       Atomics.notify(allJobsDone, 0);
     }
 
@@ -95,9 +93,9 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   const nextJob = new Int32Array(new SharedArrayBuffer(4));
   const doneJobs = new Int32Array(new SharedArrayBuffer(4));
   const allJobsDone = new Int32Array(new SharedArrayBuffer(4));
-  Atomics.store(nextJob, 0, 0);
-  Atomics.store(doneJobs, 0, jobs.length);
-  Atomics.store(allJobsDone, 0, 0);
+  nextJob[0] = 0;
+  doneJobs[0] = jobs.length;
+  allJobsDone[0] = 0;
 
   // Boot workers
   workers.forEach(worker => {
@@ -118,12 +116,13 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
     board.skips[1 - board.skipsInput[0]].fill(SKIP);
 
     // Processing
-    Atomics.store(nextJob, 0, 0);
-    Atomics.store(doneJobs, 0, 0);
-    // Atomics.notify(doneJobs, 0);
+    allJobsDone[0] = 0;
+    nextJob[0] = 0;
+    doneJobs[0] = 0;
+    Atomics.notify(doneJobs, 0);
     processJobs(board, jobs, nextJob, doneJobs, allJobsDone);
 
-    Atomics.wait(allJobsDone, 0, 0);
+    Atomics.wait(allJobsDone, 0, 0); // Wait if 0
 
     // Post-processing
     assignBoardPadding(board);

@@ -16,8 +16,7 @@ addEventListener('message', async (event: MessageEvent<BootMessage>) => {
 
   while (Atomics.wait(doneJobs, 0, jobs.length)) {
     processJobs(board, jobs, nextJob, doneJobs, allJobsDone);
-    console.log(doneJobs[0]);
-    await sleep(500);
+    await sleep(10);
   }
 });
 
