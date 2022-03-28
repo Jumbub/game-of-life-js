@@ -92,11 +92,17 @@ Wait for workers to mark themselves as "ready" before starting computations.
 
 [e19df8b319c81b59b05933bd3a60cf74d3b0b9fb](https://github.com/Jumbub/game-of-life-js/commit/e19df8b319c81b59b05933bd3a60cf74d3b0b9fb)
 
-### Using Atomics to communicate, rather than messages (~10.75s)
+### Using Atomics to communicate, rather than messages (~10.3s)
 
 The improvement is quite small, but is consistently faster than messaging.
 
 [301c1fb959d2d438fc6d6c8dfe0111e11821b39c](https://github.com/Jumbub/game-of-life-js/commit/301c1fb959d2d438fc6d6c8dfe0111e11821b39c)
+
+### Re-use ImageData between frames (~9.7s)
+
+Memory allocation is killer (1ms per frame on the primary thread).
+
+[b7794dcc91cd31f74f6654374420215751abb293](https://github.com/Jumbub/game-of-life-js/commit/b7794dcc91cd31f74f6654374420215751abb293)
 
 <br/>
 
