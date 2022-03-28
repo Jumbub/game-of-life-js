@@ -67,7 +67,7 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   const segmentsCount = new Int32Array(new SharedArrayBuffer(4));
   const segmentsDone = new Int32Array(new SharedArrayBuffer(4));
 
-  const nextBoardLoop = () => {
+  while (generationsAndMax[0] < generationsAndMax[1]) {
     Atomics.store(segmentsCount, 0, 0);
     Atomics.store(segmentsDone, 0, 0);
 
@@ -89,8 +89,5 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
 
     assignBoardPadding(board);
     generationsAndMax[0]++;
-    if (generationsAndMax[0] < generationsAndMax[1]) nextBoardLoop();
-  };
-
-  nextBoardLoop();
+  }
 };
