@@ -5,10 +5,9 @@ export const DEAD_COLOR_32 = 16777215;
 
 const COLOR_DIFF = ALIVE_COLOR_32 - DEAD_COLOR_32;
 
-export const render = (board: Board, context: CanvasRenderingContext2D) => {
+export const render = (image: ImageData, board: Board, context: CanvasRenderingContext2D) => {
   const { width, height } = board;
 
-  const image = new ImageData(width, height);
   const image32 = new Uint32Array(image.data.buffer);
   const size = width * height;
 

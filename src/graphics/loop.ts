@@ -11,6 +11,7 @@ export type Meta = {
   generationsAndMax: Uint32Array; // [computations, maxGenerations]
   renders: number;
   rendersMinimumMilliseconds: number;
+  imageData: ImageData;
   onDone: (meta: Meta) => void;
 };
 
@@ -34,6 +35,7 @@ export const setup = async (
       generationsAndMax,
       rendersMinimumMilliseconds,
       onDone,
+      imageData: new ImageData(viewWidth + 2, viewHeight + 2),
       renders: 0,
     };
 
@@ -51,7 +53,7 @@ export const setup = async (
 };
 
 export const run = (meta: Meta) => {
-  const renderLambda = () => render(meta.board, meta.context);
+  const renderLambda = () => render(meta.imageData, meta.board, meta.context);
 
   const interval = setInterval(() => {
     const [generations, maxGenerations] = meta.generationsAndMax;
