@@ -53,13 +53,11 @@ export const setup = async (
 };
 
 export const run = (meta: Meta) => {
-  const renderLambda = () => render(meta.imageData, meta.board, meta.context);
-
   const interval = setInterval(() => {
     const [generations, maxGenerations] = meta.generationsAndMax;
 
     document.title = String(generations);
-    requestAnimationFrame(renderLambda);
+    render(meta.imageData, meta.board, meta.context);
     meta.renders++;
 
     if (generations >= maxGenerations) {
