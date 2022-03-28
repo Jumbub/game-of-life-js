@@ -1,7 +1,7 @@
-import { load } from './common/load.js';
-import { createNonDeterministicBenchmark } from './common/noneDeterministicBenchmark.js';
-import { run, setup } from './graphics/loop.js';
-import { parseNumberOrDefault } from './parseNumberOrDefault.js';
+import { load } from './common/load';
+import { createNonDeterministicBenchmark } from './common/noneDeterministicBenchmark';
+import { run, setup } from './graphics/loop';
+import { parseNumberOrDefault } from './parseNumberOrDefault';
 
 {
   const params = new URLSearchParams(location.search);

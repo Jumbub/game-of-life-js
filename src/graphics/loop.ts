@@ -1,8 +1,8 @@
-import { Board, newBoard } from '../logic/board.js';
-import { StartMessage } from '../logic/primaryWorker.js';
-import { newContext } from './context.js';
-import { handleMouse } from './mouse.js';
-import { render } from './render.js';
+import { Board, newBoard } from '../logic/board';
+import { StartMessage } from '../logic/primaryWorker';
+import { newContext } from './context';
+import { handleMouse } from './mouse';
+import { render } from './render';
 
 export type Meta = {
   board: Board;

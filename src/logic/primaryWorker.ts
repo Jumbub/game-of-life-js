@@ -1,6 +1,6 @@
-import { Board } from './board.js';
-import { startNextBoardLoop } from './next.js';
-import { PROBABLY_OPTIMAL_WORKER_COUNT } from './workers.js';
+import { Board } from './board';
+import { startNextBoardLoop } from './next';
+import { PROBABLY_OPTIMAL_WORKER_COUNT } from './workers';
 
 export type StartMessage = {
   generationsAndMax: Uint32Array; // [computations, maxGenerations]

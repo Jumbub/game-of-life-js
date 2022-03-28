@@ -1,7 +1,7 @@
-import { load, match } from '../common/load.js';
-import { print } from '../common/print.js';
-import { Meta, run, setup } from '../graphics/loop.js';
-import { BENCHMARK_2000 } from '../test/benchmark_2000.js';
+import { load, match } from '../common/load';
+import { print } from '../common/print';
+import { Meta, run, setup } from '../graphics/loop';
+import { BENCHMARK_2000 } from '../test/benchmark_2000';
 
 export const bench = async (
   data: string,

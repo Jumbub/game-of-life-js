@@ -1,16 +1,16 @@
-import { BENCHMARK } from '../common/benchmark.js';
-import { load, match } from '../common/load.js';
-import { print } from '../common/print.js';
-import { sleep } from '../common/sleep.js';
-import { Meta, run, setup } from '../graphics/loop.js';
-import { Board, flipBoardIo, getBoardIo, newBoard } from '../logic/board.js';
-import { nextBoardSection } from '../logic/next.js';
-import { assignBoardPadding } from '../logic/padding.js';
-import { BENCHMARK_1 } from './benchmark_1.js';
-import { BENCHMARK_100 } from './benchmark_100.js';
-import { BENCHMARK_2 } from './benchmark_2.js';
-import { BENCHMARK_2000 } from './benchmark_2000.js';
-import { BENCHMARK_3 } from './benchmark_3.js';
+import { BENCHMARK } from '../common/benchmark';
+import { load, match } from '../common/load';
+import { print } from '../common/print';
+import { sleep } from '../common/sleep';
+import { Meta, run, setup } from '../graphics/loop';
+import { Board, flipBoardIo, getBoardIo, newBoard } from '../logic/board';
+import { nextBoardSection } from '../logic/next';
+import { assignBoardPadding } from '../logic/padding';
+import { BENCHMARK_1 } from './benchmark_1';
+import { BENCHMARK_100 } from './benchmark_100';
+import { BENCHMARK_2 } from './benchmark_2';
+import { BENCHMARK_2000 } from './benchmark_2000';
+import { BENCHMARK_3 } from './benchmark_3';
 
 const passed = (status: null | true | false) => {
   switch (status) {

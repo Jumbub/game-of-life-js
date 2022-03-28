@@ -1,7 +1,7 @@
-import { BENCHMARK } from '../common/benchmark.js';
-import { bench } from './bench.js';
-import { parseNumberOrDefault } from '../parseNumberOrDefault.js';
-import { random } from '../common/load.js';
+import { BENCHMARK } from '../common/benchmark';
+import { bench } from './bench';
+import { parseNumberOrDefault } from '../parseNumberOrDefault';
+import { random } from '../common/load';
 
 {
   const params = new URLSearchParams(location.search);

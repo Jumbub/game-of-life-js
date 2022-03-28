@@ -1,5 +1,5 @@
-import { Board, getBoardIo } from './board.js';
-import { nextBoardSection } from './next.js';
+import { Board, getBoardIo } from './board';
+import { nextBoardSection } from './next';
 
 export type StartMessage = {
   beginI: number;

@@ -1,4 +1,4 @@
-import { Board, DONT_SKIP, getBoardIo, SKIP_MULTIPLYER } from './board.js';
+import { Board, DONT_SKIP, getBoardIo, SKIP_MULTIPLYER } from './board';
 
 const assignPadding = (board: Board) => {
   const { width, height } = board;

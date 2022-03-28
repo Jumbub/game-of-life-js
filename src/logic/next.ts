@@ -1,6 +1,6 @@
-import { Board, Cells, DONT_SKIP, flipBoardIo, getBoardIo, Skip, SKIP, Skips, SKIP_MULTIPLYER } from './board.js';
-import { assignBoardPadding } from './padding.js';
-import { StartMessage } from './segmentWorker.js';
+import { Board, Cells, DONT_SKIP, flipBoardIo, getBoardIo, Skip, SKIP, Skips, SKIP_MULTIPLYER } from './board';
+import { assignBoardPadding } from './padding';
+import { StartMessage } from './segmentWorker';
 
 export const LOOKUP = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0] as const;
 
