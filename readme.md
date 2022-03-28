@@ -76,7 +76,7 @@ Allowing the computation scheduling to run synchronously (removed `setTimeout(jo
 
 [e67e46a797115aca4bd168210c0201507baa9c41](https://github.com/Jumbub/game-of-life-js/commit/e67e46a797115aca4bd168210c0201507baa9c41)
 
-### Mutiple workers computing simultaneously (~11.5s)
+### Mutiple workers computing simultaneously (??)
 
 Currently most optimal with 16 workers, but I suspect that number will come back down to 4 once I've optimised more operations.
 
@@ -84,9 +84,9 @@ Currently most optimal with 16 workers, but I suspect that number will come back
 8 threads: 11.74s
 16 threads: 11.45s
 
-[97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-life-js/commit/97067de019fc6045240d157da1ca130c77dd27dd)
+[TODO](https://github.com/Jumbub/game-of-life-js/commit/TODO)
 
-### Mutiple workers computing simultaneously (~10.4s)
+### Mutiple workers computing simultaneously (??)
 
 Wait for workers to mark themselves as "ready" before starting computations.
 
