@@ -1,3 +1,4 @@
+import { createJobSignals, notifyStartJobs, requestJobToProcess, waitForAllJobsToComplete } from '../workers/jobs.js';
 import { BootMessage } from '../workers/secondary.worker.js';
 import { Board, Cells, DONT_SKIP, flipBoardIo, getBoardIo, SKIP, Skips, SKIP_MULTIPLYER } from './board.js';
 import { assignBoardPadding } from './padding.js';
@@ -90,43 +91,36 @@ const createJobs = (segments: number, width: number, height: number): [number, n
 
 export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[]) => {
   const jobs = createJobs(PROBABLY_OPTIMAL_JOB_COUNT, board.width, board.height);
-  const nextJob = new Int32Array(new SharedArrayBuffer(4));
-  const doneJobs = new Int32Array(new SharedArrayBuffer(4));
-  const allJobsDone = new Int32Array(new SharedArrayBuffer(4));
-  nextJob[0] = 0;
-  doneJobs[0] = jobs.length;
-  allJobsDone[0] = 0;
+  const signals = createJobSignals(jobs.length);
 
-  // Boot workers
+  const processJobI = (i: number) => {
+    const [beginI, endI] = jobs[i];
+    const { input, output, inSkips, outSkips } = getBoardIo(board);
+    nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
+  };
+
+  // Note: likely improvements by moving this into the setup function
   workers.forEach(worker => {
     const message: BootMessage = {
       board,
       jobs,
-      nextJob,
-      doneJobs,
-      allJobsDone,
+      signals,
     };
     worker.postMessage(message);
   });
 
-  // Processing loop
   while (generationsAndMax[0] < generationsAndMax[1]) {
     // Pre-processing
     flipBoardIo(board);
     board.skips[1 - board.skipsInput[0]].fill(SKIP);
 
     // Processing
-    allJobsDone[0] = 0;
-    nextJob[0] = 0;
-    doneJobs[0] = 0;
-    Atomics.notify(doneJobs, 0);
-    processJobs(board, jobs, nextJob, doneJobs, allJobsDone);
-
-    Atomics.wait(allJobsDone, 0, 0); // Wait if 0
+    notifyStartJobs(signals);
+    while (requestJobToProcess(signals, processJobI)) {}
+    waitForAllJobsToComplete(signals);
 
     // Post-processing
     assignBoardPadding(board);
-
     generationsAndMax[0]++;
   }
 };
