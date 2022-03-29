@@ -30,6 +30,8 @@ ${validOutput || validParams || validRps}`;
 
     print(report);
     console.log(report);
+
+    meta.primaryWorker.terminate();
   };
 
   const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, onDone);
