@@ -32,15 +32,18 @@ const isAlive = (i: number, cells: Cells, width: number) => {
 };
 
 const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
-  outSkip[~~((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i - width) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~(i / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i + width) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  const top = ~~((i - width - 1) / SKIP_MULTIPLYER);
+  const middle = ~~((i - 1) / SKIP_MULTIPLYER);
+  const bottom = ~~((i + width - 1) / SKIP_MULTIPLYER);
+  outSkip[top] = DONT_SKIP;
+  outSkip[top + 1] = DONT_SKIP;
+  outSkip[top + 2] = DONT_SKIP;
+  outSkip[middle] = DONT_SKIP;
+  outSkip[middle + 1] = DONT_SKIP;
+  outSkip[middle + 2] = DONT_SKIP;
+  outSkip[bottom] = DONT_SKIP;
+  outSkip[bottom + 1] = DONT_SKIP;
+  outSkip[bottom + 2] = DONT_SKIP;
 };
 
 export const nextBoardSection = (
