@@ -1,4 +1,8 @@
+let lastCanvas: HTMLCanvasElement;
+
 export const newContext = (viewWidth: number, viewHeight: number) => {
+  if (lastCanvas) lastCanvas.remove();
+
   const canvas = document.createElement('canvas');
   canvas.width = viewWidth + 2;
   canvas.height = viewHeight + 2;
