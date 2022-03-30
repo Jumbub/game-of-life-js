@@ -4,48 +4,59 @@ import { Meta, run, setup } from '../graphics/loop.js';
 import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads.js';
 import { BENCHMARK_2000 } from '../test/benchmark_2000.js';
 
-export const bench = async (
+export const bench = (
   data: string,
   width: number,
   height: number,
   maxGenerations: number,
   rendersPerSecond: number,
-) => {
-  const onDone = (meta: Meta) => {
-    const stop = performance.now();
-    const seconds = (stop - start) / 1000;
-    const rps = meta.renders / seconds;
+  workerCount: number = PROBABLY_OPTIMAL_THREAD_COUNT,
+  jobCount: number = PROBABLY_OPTIMAL_JOB_COUNT,
+) =>
+  new Promise(async resolve => {
+    const onDone = (meta: Meta) => {
+      const stop = performance.now();
 
-    const validParams =
-      width === 2560 && height === 1440 && maxGenerations === 2000 && rendersPerSecond === 30
-        ? ''
-        : '*PARAMS NOT ELIGIBLE FOR DISPLAY ON README*';
-    const validOutput = validParams ? '' : match(meta.board, BENCHMARK_2000) ? '' : '*COMPUTED RESULT IS INCORRECT*';
-    const validRps = rps > rendersPerSecond * 0.999 ? '' : '*TOO FEW RENDERS TO BE ELIGIBLE FOR DISPLAY ON README*';
+      meta.primaryWorker.terminate();
 
-    const report = `seconds: ${seconds.toFixed(2)}s
-generations: ${meta.generationsAndMax[0]}
-generations/second: ${(meta.generationsAndMax[0] / seconds).toFixed(2)}
-renders/second: ${rps.toFixed(2)}
-${validOutput || validParams || validRps}`;
+      const seconds = (stop - start) / 1000;
+      const actualRendersPerSecond = meta.renders / seconds;
+      const now = new Date();
 
-    print(report);
-    console.log(report);
+      const validConfiguration = width === 2560 && height === 1440 && maxGenerations === 2000;
+      const validGraphics = actualRendersPerSecond >= rendersPerSecond * 0.999;
+      const validLogic = validConfiguration && match(meta.board, BENCHMARK_2000);
 
-    meta.primaryWorker.terminate();
-  };
+      const report = `${
+        !validConfiguration
+          ? '*INELIGIBLE CONFIGURATION*\n\n'
+          : !validGraphics
+          ? '*TOO FEW RENDERS*\n\n'
+          : !validLogic
+          ? '*FINAL STATE IS WRONG*\n\n'
+          : ''
+      }seconds: ${seconds.toFixed(2)}s
+      generations/second: ${(meta.generationsAndMax[0] / seconds).toFixed(2)}
+      renders/second: ${actualRendersPerSecond.toFixed(2)}
 
-  const meta = await setup(
-    width,
-    height,
-    maxGenerations,
-    1000 / rendersPerSecond,
-    PROBABLY_OPTIMAL_THREAD_COUNT,
-    PROBABLY_OPTIMAL_JOB_COUNT,
-    onDone,
-  );
-  load(meta.board, data);
+      generations: ${meta.generationsAndMax[0]}
+      width: ${width}
+      height: ${height}
+      workerCount: ${workerCount}
+      jobCount: ${jobCount}
 
-  const start = performance.now();
-  run(meta);
-};
+      now: ${now.toISOString()}`.replace(/      /g, '');
+
+      print(report);
+      console.log(report);
+      sessionStorage.setItem(`report-${seconds}-${workerCount}-${jobCount}`, report);
+
+      resolve(true);
+    };
+
+    const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, workerCount, jobCount, onDone);
+    load(meta.board, data);
+
+    const start = performance.now();
+    run(meta);
+  });
