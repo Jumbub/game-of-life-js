@@ -8,7 +8,9 @@ import { parseNumberOrDefault } from './parseNumberOrDefault.js';
   const maxGenerations = parseNumberOrDefault(params.get('maxGenerations'), 999999);
   const rendersPerSecond = parseNumberOrDefault(params.get('rendersPerSecond'), 30);
 
-  const meta = await setup(innerWidth, innerHeight, maxGenerations, 1000 / rendersPerSecond, () => {});
+  const meta = await setup(innerWidth, innerHeight, maxGenerations, 1000 / rendersPerSecond, () => {
+    meta.primaryWorker.terminate();
+  });
   load(meta.board, createNonDeterministicBenchmark(innerWidth, innerHeight));
   run(meta);
 }

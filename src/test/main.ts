@@ -1,29 +1,13 @@
 import { BENCHMARK } from '../common/benchmark.js';
 import { load, match } from '../common/load.js';
 import { print } from '../common/print.js';
-import { sleep } from '../common/sleep.js';
 import { Meta, run, setup } from '../graphics/loop.js';
-import { Board, flipBoardIo, getBoardIo, newBoard } from '../logic/board.js';
-import { nextBoardSection } from '../logic/next.js';
-import { assignBoardPadding } from '../logic/padding.js';
+import { Board } from '../logic/board.js';
 import { BENCHMARK_1 } from './benchmark_1.js';
 import { BENCHMARK_100 } from './benchmark_100.js';
 import { BENCHMARK_2 } from './benchmark_2.js';
 import { BENCHMARK_2000 } from './benchmark_2000.js';
 import { BENCHMARK_3 } from './benchmark_3.js';
-
-const passed = (status: null | true | false) => {
-  switch (status) {
-    case true:
-      document.body.style.backgroundColor = 'green';
-      break;
-    case false:
-      document.body.style.backgroundColor = 'darkRed';
-      break;
-    default:
-      document.body.style.backgroundColor = 'yellow';
-  }
-};
 
 const compare = async (label: string, board: Board, data: string) => {
   if (!match(board, data)) {
@@ -54,6 +38,7 @@ const runTest = (meta: Meta, maxGenerations: number, data: string, next: () => v
             runTest(meta, 2000, BENCHMARK_2000, () => {
               document.title = 'passed';
               print('passed');
+              meta.primaryWorker.terminate();
             });
           });
         });

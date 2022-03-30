@@ -1,4 +1,4 @@
-import { littleEndian } from './endianness.js';
+import { littleEndian } from '../common/endianness.js';
 
 export type Board = {
   cells: [Cells, Cells];
