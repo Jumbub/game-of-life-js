@@ -1,6 +1,17 @@
 import { createJobSignals, notifyStartJobs, requestJobToProcess, waitForAllJobsToComplete } from '../workers/jobs.js';
 import { BootMessage } from '../workers/secondary.worker.js';
-import { Board, Cells, DONT_SKIP, flipBoardIo, getBoardIo, SKIP, Skips, SKIP_MULTIPLYER } from './board.js';
+import {
+  Board,
+  Cells,
+  DONT_SKIP,
+  fillSkips,
+  flipBoardIo,
+  getBoardIo,
+  SKIP,
+  skipI,
+  Skips,
+  SKIP_MULTIPLYER,
+} from './board.js';
 import { assignBoardPadding } from './padding.js';
 import { PROBABLY_OPTIMAL_JOB_COUNT } from './threads.js';
 
@@ -41,6 +52,7 @@ export const nextBoardSection = (
   inSkip: Skips,
   outSkip: Skips,
 ) => {
+  fillSkips(outSkip, i + width - 1, endI - width + 1);
   while (i < endI) {
     while (inSkip[Math.floor(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
@@ -89,6 +101,16 @@ const createJobs = (segments: number, width: number, height: number): [number, n
   });
 };
 
+const setSkipBorders = (board: Board, jobs: [number, number][]) => {
+  const { width, height } = board;
+  const { outSkips } = getBoardIo(board);
+
+  for (let i = 0; i < jobs.length; i++) {
+    const [beginI] = jobs[i];
+    fillSkips(outSkips, beginI - width - 1, beginI + width - 1);
+  }
+};
+
 export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[]) => {
   const jobs = createJobs(PROBABLY_OPTIMAL_JOB_COUNT, board.width, board.height);
   const signals = createJobSignals(jobs.length);
@@ -112,7 +134,7 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   while (generationsAndMax[0] < generationsAndMax[1]) {
     // Pre-processing
     flipBoardIo(board);
-    board.skips[1 - board.skipsInput[0]].fill(SKIP);
+    setSkipBorders(board, jobs);
 
     // Processing
     notifyStartJobs(signals);

@@ -25,6 +25,14 @@ export type Skips = Uint8Array;
 
 export const SKIP_MULTIPLYER = 8;
 
+export const fillSkips = (skips: Skips, start: number, end: number) => {
+  return skips.fill(SKIP, skipI(start), skipI(end));
+};
+
+export const skipI = (i: number) => {
+  return Math.floor(i / SKIP_MULTIPLYER);
+};
+
 export const newBoard = (viewWidth: number, viewHeight: number) => {
   if (!littleEndian()) {
     alert('Browser uses incorrect bit endianness');
