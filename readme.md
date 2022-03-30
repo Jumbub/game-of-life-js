@@ -163,15 +163,16 @@ Cross-Origin-Opener-Policy: same-origin
 
 ### The mouse matters
 
-During this [09e3a15157109f31dac01818aa38efd011938f46](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46) I came to the realisation that the position of the mouse manipulated the performance of my benchmark.
+During this [commit](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46),
+I came to the realisation that the position of the mouse had a dramatic impact on app performance.
 
 ~time | mouse state | mouse over
 --- | --- | ---
-6.7s | moving | canvas
-5.8s | still | canvas
-5.6s | moving | devtools
+6.7s | moving | chrome window
+5.8s | still | chrome window
+5.6s | moving | devtools window
 5.2s | moving | random window
-4.96s | still | devtools
+4.96s | still | devtools window
 4.96s | still | random window
 
 > Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
