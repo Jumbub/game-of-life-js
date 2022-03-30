@@ -32,15 +32,15 @@ const isAlive = (i: number, cells: Cells, width: number) => {
 };
 
 const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
-  outSkip[Math.floor((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i - width) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor(i / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + width) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i - width) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~(i / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + width) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
 };
 
 export const nextBoardSection = (
@@ -54,7 +54,7 @@ export const nextBoardSection = (
 ) => {
   fillSkips(outSkip, i + width - 1, endI - width + 1);
   while (i < endI) {
-    while (inSkip[Math.floor(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
+    while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
     output[i] = isAlive(i, input, width);
 

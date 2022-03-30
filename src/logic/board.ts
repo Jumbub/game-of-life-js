@@ -30,7 +30,7 @@ export const fillSkips = (skips: Skips, start: number, end: number) => {
 };
 
 export const skipI = (i: number) => {
-  return Math.floor(i / SKIP_MULTIPLYER);
+  return ~~(i / SKIP_MULTIPLYER);
 };
 
 export const newBoard = (viewWidth: number, viewHeight: number) => {

@@ -9,7 +9,7 @@ export const handleMouse = (board: Board) => {
       for (let xo = x - RADIUS; xo < x + RADIUS; xo++) {
         const i = yo * board.width + xo;
         output[i] = Math.round(Math.random());
-        outSkips[Math.floor(i / SKIP_MULTIPLYER)] = DONT_SKIP;
+        outSkips[~~(i / SKIP_MULTIPLYER)] = DONT_SKIP;
       }
     }
   };
