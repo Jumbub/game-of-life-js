@@ -3,6 +3,7 @@ import { load, match } from '../common/load.js';
 import { print } from '../common/print.js';
 import { Meta, run, setup } from '../graphics/loop.js';
 import { Board } from '../logic/board.js';
+import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads.js';
 import { BENCHMARK_1 } from './benchmark_1.js';
 import { BENCHMARK_100 } from './benchmark_100.js';
 import { BENCHMARK_2 } from './benchmark_2.js';
@@ -28,23 +29,31 @@ const runTest = (meta: Meta, maxGenerations: number, data: string, next: () => v
 };
 
 (async () => {
-  const meta = await setup(2560, 1440, 0, 1000, async meta => {
-    await compare('benchmark 0', meta.board, BENCHMARK);
+  const meta = await setup(
+    2560,
+    1440,
+    0,
+    1000,
+    PROBABLY_OPTIMAL_THREAD_COUNT,
+    PROBABLY_OPTIMAL_JOB_COUNT,
+    async meta => {
+      await compare('benchmark 0', meta.board, BENCHMARK);
 
-    runTest(meta, 1, BENCHMARK_1, () => {
-      runTest(meta, 2, BENCHMARK_2, () => {
-        runTest(meta, 3, BENCHMARK_3, () => {
-          runTest(meta, 100, BENCHMARK_100, () => {
-            runTest(meta, 2000, BENCHMARK_2000, () => {
-              document.title = 'passed';
-              print('passed');
-              meta.primaryWorker.terminate();
+      runTest(meta, 1, BENCHMARK_1, () => {
+        runTest(meta, 2, BENCHMARK_2, () => {
+          runTest(meta, 3, BENCHMARK_3, () => {
+            runTest(meta, 100, BENCHMARK_100, () => {
+              runTest(meta, 2000, BENCHMARK_2000, () => {
+                document.title = 'passed';
+                print('passed');
+                meta.primaryWorker.terminate();
+              });
             });
           });
         });
       });
-    });
-  });
+    },
+  );
 
   load(meta.board, BENCHMARK);
   run(meta);

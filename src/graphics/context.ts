@@ -12,5 +12,5 @@ export const newContext = (viewWidth: number, viewHeight: number) => {
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Must be able to retrieve 2d context');
 
-  return context;
+  return { canvas, context };
 };

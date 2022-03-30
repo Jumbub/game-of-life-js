@@ -1,6 +1,6 @@
 import { Board, DONT_SKIP, getBoardIo, SKIP_MULTIPLYER } from '../logic/board.js';
 
-export const handleMouse = (board: Board) => {
+export const handleMouse = (canvas: HTMLCanvasElement, board: Board) => {
   const { output, outSkips } = getBoardIo(board);
   let mouseDown = false;
   const draw = ({ x, y }: { x: number; y: number }) => {
@@ -13,14 +13,14 @@ export const handleMouse = (board: Board) => {
       }
     }
   };
-  document.addEventListener('mousedown', event => {
+  canvas.addEventListener('mousedown', event => {
     mouseDown = true;
     draw(event);
   });
-  document.addEventListener('mousemove', event => {
+  canvas.addEventListener('mousemove', event => {
     if (mouseDown) draw(event);
   });
-  document.addEventListener('mouseup', () => {
+  canvas.addEventListener('mouseup', () => {
     mouseDown = false;
   });
 };

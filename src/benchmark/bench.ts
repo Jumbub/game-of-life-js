@@ -1,6 +1,7 @@
 import { load, match } from '../common/load.js';
 import { print } from '../common/print.js';
 import { Meta, run, setup } from '../graphics/loop.js';
+import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads.js';
 import { BENCHMARK_2000 } from '../test/benchmark_2000.js';
 
 export const bench = async (
@@ -34,7 +35,15 @@ ${validOutput || validParams || validRps}`;
     meta.primaryWorker.terminate();
   };
 
-  const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, onDone);
+  const meta = await setup(
+    width,
+    height,
+    maxGenerations,
+    1000 / rendersPerSecond,
+    PROBABLY_OPTIMAL_THREAD_COUNT,
+    PROBABLY_OPTIMAL_JOB_COUNT,
+    onDone,
+  );
   load(meta.board, data);
 
   const start = performance.now();

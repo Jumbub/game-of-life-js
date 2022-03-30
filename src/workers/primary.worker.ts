@@ -1,18 +1,22 @@
 import { Board } from '../logic/board.js';
 import { startNextBoardLoop } from '../logic/next.js';
-import { PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads.js';
 import { notifyReady } from './ready.js';
 import { secondaryFactoryMulti } from './secondary.js';
 
-export type BootPrimaryMessage = {
+export type WorkerCountMessage = number;
+
+export type StartPrimaryMessage = {
   generationsAndMax: Uint32Array; // [computations, maxGenerations]
   board: Board;
+  jobCount: number;
 };
 
-const secondaryWorkers = await secondaryFactoryMulti(PROBABLY_OPTIMAL_THREAD_COUNT - 1);
+onmessage = async (event: MessageEvent<WorkerCountMessage>) => {
+  const secondaryWorkers = await secondaryFactoryMulti(event.data - 1);
 
-onmessage = (event: MessageEvent<BootPrimaryMessage>) => {
-  startNextBoardLoop(event.data.generationsAndMax, event.data.board, secondaryWorkers);
+  onmessage = (event: MessageEvent<StartPrimaryMessage>) => {
+    startNextBoardLoop(event.data.generationsAndMax, event.data.board, secondaryWorkers, event.data.jobCount);
+  };
+
+  notifyReady();
 };
-
-notifyReady();

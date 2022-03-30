@@ -1,6 +1,6 @@
 import { Board, newBoard } from '../logic/board.js';
 import { primaryFactory } from '../workers/primary.js';
-import { BootPrimaryMessage } from '../workers/primary.worker.js';
+import { StartPrimaryMessage } from '../workers/primary.worker.js';
 import { newContext } from './context.js';
 import { handleMouse } from './mouse.js';
 import { render } from './render.js';
@@ -8,10 +8,12 @@ import { render } from './render.js';
 export type Meta = {
   board: Board;
   context: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
   primaryWorker: Worker;
   generationsAndMax: Uint32Array; // [computations, maxGenerations]
   renders: number;
   rendersMinimumMilliseconds: number;
+  jobCount: number;
   imageData: ImageData;
   onDone: (meta: Meta) => void;
 };
@@ -21,36 +23,30 @@ export const setup = async (
   viewHeight: number,
   maxGenerations: number,
   rendersMinimumMilliseconds: number,
+  workerCount: number,
+  jobCount: number,
   onDone: (meta: Meta) => void,
 ) => {
-  // Create board, context, and other meta
-  const board = newBoard(viewWidth, viewHeight);
-  const context = newContext(viewWidth, viewHeight);
   const generationsAndMax = new Uint32Array(new SharedArrayBuffer(8));
   generationsAndMax[0] = 0;
   generationsAndMax[1] = maxGenerations === Infinity ? Math.pow(2, 32) : maxGenerations;
-  const meta: Omit<Meta, 'primaryWorker'> = {
-    board,
-    context,
+
+  return {
+    ...newContext(viewWidth, viewHeight),
+    board: newBoard(viewWidth, viewHeight),
+    onDone,
+    jobCount,
+    renders: 0,
     generationsAndMax,
     rendersMinimumMilliseconds,
-    onDone,
     imageData: new ImageData(viewWidth + 2, viewHeight + 2),
-    renders: 0,
-  };
-
-  // Interactivity
-  handleMouse(board);
-  onkeydown = () => (generationsAndMax[1] = 0);
-
-  // Boot primary worker, and only resolve setup when it's ready
-  return {
-    ...meta,
-    primaryWorker: await primaryFactory(),
+    primaryWorker: await primaryFactory(workerCount),
   };
 };
 
 export const run = (meta: Meta) => {
+  handleMouse(meta.canvas, meta.board);
+
   const interval = setInterval(() => {
     const [generations, maxGenerations] = meta.generationsAndMax;
 
@@ -65,6 +61,10 @@ export const run = (meta: Meta) => {
     }
   }, meta.rendersMinimumMilliseconds);
 
-  const message: BootPrimaryMessage = { board: meta.board, generationsAndMax: meta.generationsAndMax };
+  const message: StartPrimaryMessage = {
+    board: meta.board,
+    jobCount: meta.jobCount,
+    generationsAndMax: meta.generationsAndMax,
+  };
   meta.primaryWorker.postMessage(message);
 };
