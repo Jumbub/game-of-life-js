@@ -54,31 +54,6 @@ export const nextBoardSection = (
   }
 };
 
-export const processJobs = (
-  board: Board,
-  jobs: [beginI: number, endI: number][],
-  nextJob: Int32Array,
-  doneJobs: Int32Array, // TODO: Investigate computing this value from  "nextJob + total workers"
-  allJobsDone: Int32Array,
-) => {
-  const nJobs = jobs.length;
-  let job = Atomics.add(nextJob, 0, 1);
-  while (job < nJobs) {
-    const [beginI, endI] = jobs[job];
-    const { input, output, inSkips, outSkips } = getBoardIo(board);
-    nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
-
-    const previousDoneCount = Atomics.add(doneJobs, 0, 1);
-    if (previousDoneCount === nJobs - 1) {
-      // Notify that all workers are done
-      allJobsDone[0] = 1;
-      Atomics.notify(allJobsDone, 0);
-    }
-
-    job = Atomics.add(nextJob, 0, 1);
-  }
-};
-
 const createJobs = (segments: number, width: number, height: number): [number, number][] => {
   let endI = width;
   const segmentSize = (Math.floor(height / segments) + (height % segments)) * width;
