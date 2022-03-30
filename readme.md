@@ -173,3 +173,5 @@ During this [09e3a15157109f31dac01818aa38efd011938f46](https://github.com/Jumbub
 5.2s | moving | random window
 4.96s | still | devtools
 4.96s | still | random window
+
+> Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
