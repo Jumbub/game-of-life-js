@@ -1,17 +1,6 @@
 import { createJobSignals, notifyStartJobs, requestJobToProcess, waitForAllJobsToComplete } from '../workers/jobs.js';
 import { BootMessage } from '../workers/secondary.worker.js';
-import {
-  Board,
-  Cells,
-  DONT_SKIP,
-  fillSkips,
-  flipBoardIo,
-  getBoardIo,
-  SKIP,
-  skipI,
-  Skips,
-  SKIP_MULTIPLYER,
-} from './board.js';
+import { Board, Cells, DONT_SKIP, fillSkips, flipBoardIo, getBoardIo, skipI, Skips, SKIP_MULTIPLYER } from './board.js';
 import { assignBoardPadding } from './padding.js';
 import { PROBABLY_OPTIMAL_JOB_COUNT } from './threads.js';
 
@@ -32,15 +21,15 @@ const isAlive = (i: number, cells: Cells, width: number) => {
 };
 
 const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
-  outSkip[Math.floor((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i - width) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor(i / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + width) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[Math.floor((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[skipI(i - width - 1)] = DONT_SKIP;
+  outSkip[skipI(i - width)] = DONT_SKIP;
+  outSkip[skipI(i - width + 1)] = DONT_SKIP;
+  outSkip[skipI(i - 1)] = DONT_SKIP;
+  outSkip[skipI(i)] = DONT_SKIP;
+  outSkip[skipI(i + 1)] = DONT_SKIP;
+  outSkip[skipI(i + width - 1)] = DONT_SKIP;
+  outSkip[skipI(i + width)] = DONT_SKIP;
+  outSkip[skipI(i + width + 1)] = DONT_SKIP;
 };
 
 export const nextBoardSection = (
@@ -54,7 +43,7 @@ export const nextBoardSection = (
 ) => {
   fillSkips(outSkip, i + width - 1, endI - width + 1);
   while (i < endI) {
-    while (inSkip[Math.floor(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
+    while (inSkip[skipI(i)]) i += SKIP_MULTIPLYER;
 
     output[i] = isAlive(i, input, width);
 
@@ -102,7 +91,7 @@ const createJobs = (segments: number, width: number, height: number): [number, n
 };
 
 const setSkipBorders = (board: Board, jobs: [number, number][]) => {
-  const { width, height } = board;
+  const { width } = board;
   const { outSkips } = getBoardIo(board);
 
   for (let i = 0; i < jobs.length; i++) {
