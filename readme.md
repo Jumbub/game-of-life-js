@@ -160,3 +160,16 @@ In Chrome, this feature requires the page is loaded with the following headers:
 Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Opener-Policy: same-origin
 ```
+
+### The mouse matters
+
+During this [09e3a15157109f31dac01818aa38efd011938f46](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46) I came to the realisation that the position of the mouse manipulated the performance of my benchmark.
+
+~time | mouse state | mouse over
+--- | --- | ---
+6.7s | moving | canvas
+5.8s | still | canvas
+5.6s | moving | devtools
+5.2s | moving | random window
+4.96s | still | devtools
+4.96s | still | random window
