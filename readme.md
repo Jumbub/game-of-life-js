@@ -176,3 +176,13 @@ I came to the realisation that the position of the mouse had a dramatic impact o
 4.96s | still | random window
 
 > Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
+
+### Chrome user matters
+
+Running benchmarks as the "guest" account will mean you don't have any extensions running in the background, affecting your performance.
+
+On my primary account I was getting a consistent 4.95s (±0.05s), but on the guest account I got 4.85s (±0.05s).
+
+I have quite a few extensions - AdBlock, Bitwarden, Honey, Javascript Switcher, Vimium, React dev tools - did not spend the time to find a specific culprit - I assume this would be the culprit, but I can't be sure.
+
+Disabling all extensions knocked me down to a 4.89s (which I got 4 times in a row), but that still didn't match the performance of the guest account.
