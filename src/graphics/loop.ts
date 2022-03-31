@@ -50,7 +50,6 @@ export const run = (meta: Meta) => {
   const interval = setInterval(() => {
     const [generations, maxGenerations] = meta.generationsAndMax;
 
-    document.title = String(generations);
     render(meta.imageData, meta.board, meta.context);
     meta.renders++;
 
