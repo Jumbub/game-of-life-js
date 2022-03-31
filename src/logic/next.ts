@@ -1,4 +1,4 @@
-import { createJobSignals, notifyStartJobs, requestJobToProcess, waitForAllJobsToComplete } from '../workers/jobs';
+import { createJobSignals, notifyStartJobs, requestJobToProcess } from '../workers/jobs';
 import { BootMessage } from '../workers/secondary.worker';
 import { Board, Cells, DONT_SKIP, fillSkips, flipBoardIo, getBoardIo, Skips, SKIP_MULTIPLYER } from './board';
 import { assignBoardPadding } from './padding';
@@ -85,6 +85,36 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   };
 
   // Note: likely improvements by moving this into the setup function
+  let done = 0;
+
+  // while (generationsAndMax[0] < generationsAndMax[1]) {
+  const post = () => {
+    done++;
+
+    if (done === workers.length) {
+      // Post-processing
+      assignBoardPadding(board);
+      generationsAndMax[0]++;
+
+      if (generationsAndMax[0] < generationsAndMax[1]) {
+        work();
+      }
+    }
+  };
+  const work = () => {
+    done = 0;
+    // Pre-processing
+    flipBoardIo(board);
+    setSkipBorders(board, jobs);
+
+    // Processing
+    notifyStartJobs(signals);
+    workers.forEach(worker => {
+      worker.postMessage(1);
+    });
+    while (requestJobToProcess(signals, processJobI)) {}
+  };
+
   workers.forEach(worker => {
     const message: BootMessage = {
       board,
@@ -92,20 +122,8 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
       signals,
     };
     worker.postMessage(message);
+    worker.onmessage = post;
   });
 
-  while (generationsAndMax[0] < generationsAndMax[1]) {
-    // Pre-processing
-    flipBoardIo(board);
-    setSkipBorders(board, jobs);
-
-    // Processing
-    notifyStartJobs(signals);
-    while (requestJobToProcess(signals, processJobI)) {}
-    waitForAllJobsToComplete(signals);
-
-    // Post-processing
-    assignBoardPadding(board);
-    generationsAndMax[0]++;
-  }
+  work();
 };

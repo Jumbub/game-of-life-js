@@ -17,8 +17,6 @@ export const bench = (
     const onDone = (meta: Meta) => {
       const stop = performance.now();
 
-      meta.primaryWorker.terminate();
-
       const seconds = (stop - start) / 1000;
       const actualRendersPerSecond = meta.renders / seconds;
       const now = new Date();

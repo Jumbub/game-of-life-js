@@ -1,6 +1,6 @@
 import { Board, getBoardIo } from '../logic/board';
 import { nextBoardSection } from '../logic/next';
-import { JobSignals, requestJobToProcess, waitForJobs } from './jobs';
+import { JobSignals, requestJobToProcess } from './jobs';
 import { notifyReady } from './ready';
 
 export type BootMessage = {
@@ -15,9 +15,10 @@ onmessage = ({ data: { board, jobs, signals } }: MessageEvent<BootMessage>) => {
     const { input, output, inSkips, outSkips } = getBoardIo(board);
     nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
   };
-  while (waitForJobs(signals)) {
+  onmessage = () => {
     while (requestJobToProcess(signals, processJobI)) {}
-  }
+    postMessage(1);
+  };
 };
 
 notifyReady();
