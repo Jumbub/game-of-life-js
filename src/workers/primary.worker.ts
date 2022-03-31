@@ -1,7 +1,7 @@
-import { Board } from '../logic/board.js';
-import { startNextBoardLoop } from '../logic/next.js';
-import { notifyReady } from './ready.js';
-import { secondaryFactoryMulti } from './secondary.js';
+import { Board } from '../logic/board';
+import { startNextBoardLoop } from '../logic/next';
+import { notifyReady } from './ready';
+import { secondaryFactoryMulti } from './secondary';
 
 export type WorkerCountMessage = number;
 

@@ -1,25 +1,10 @@
-import { load } from './common/load.js';
-import { createNonDeterministicBenchmark } from './common/noneDeterministicBenchmark.js';
-import { run, setup } from './graphics/loop.js';
-import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from './logic/threads.js';
-import { parseNumberOrDefault } from './parseNumberOrDefault.js';
+import { benchAll } from './benchmark/all/benchAll';
+import { benchTest } from './benchmark/benchTest';
+import { random } from './random';
+import { test } from './test/test';
 
-{
-  const params = new URLSearchParams(location.search);
-  const maxGenerations = parseNumberOrDefault(params.get('maxGenerations'), 999999);
-  const rendersPerSecond = parseNumberOrDefault(params.get('rendersPerSecond'), 30);
-
-  const meta = await setup(
-    innerWidth,
-    innerHeight,
-    maxGenerations,
-    1000 / rendersPerSecond,
-    PROBABLY_OPTIMAL_THREAD_COUNT,
-    PROBABLY_OPTIMAL_JOB_COUNT,
-    () => {
-      meta.primaryWorker.terminate();
-    },
-  );
-  load(meta.board, createNonDeterministicBenchmark(innerWidth, innerHeight));
-  run(meta);
-}
+const params = new URLSearchParams(location.search);
+if (params.get('test')) test();
+else if (params.get('benchmark')) benchTest();
+else if (params.get('benchmark_all')) benchAll();
+else random();

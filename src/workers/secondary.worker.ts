@@ -1,7 +1,7 @@
-import { Board, getBoardIo } from '../logic/board.js';
-import { nextBoardSection } from '../logic/next.js';
-import { JobSignals, requestJobToProcess, waitForJobs } from './jobs.js';
-import { notifyReady } from './ready.js';
+import { Board, getBoardIo } from '../logic/board';
+import { nextBoardSection } from '../logic/next';
+import { JobSignals, requestJobToProcess, waitForJobs } from './jobs';
+import { notifyReady } from './ready';
 
 export type BootMessage = {
   board: Board;

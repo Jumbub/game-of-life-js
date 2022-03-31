@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "serve": "npm run serve:patch && http-server -c-1",
+    "serve": "npm run serve:patch && http-server -c-1 dist",
     "serve:patch": "grep require-corp ./node_modules/http-server/bin/http-server || sed -i 's/createServer(options)/createServer({...options, headers: {\"Cross-Origin-Embedder-Policy\": \"require-corp\", \"Cross-Origin-Opener-Policy\": \"same-origin\"}})/' ./node_modules/http-server/bin/http-server"
   },
   "author": "github.com/jumbub",
@@ -13,5 +13,14 @@
   "dependencies": {
     "http-server": "14.1.0",
     "typescript": "^4.6.2"
+  },
+  "devDependencies": {
+    "parcel": "^2.4.0"
+  },
+  "targets": {
+    "frontend": {
+      "source": "src/index.html",
+      "outputFormat": "esmodule"
+    }
   }
 }

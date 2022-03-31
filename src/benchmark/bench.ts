@@ -1,8 +1,8 @@
-import { load, match } from '../common/load.js';
-import { print } from '../common/print.js';
-import { Meta, run, setup } from '../graphics/loop.js';
-import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads.js';
-import { BENCHMARK_2000 } from '../test/benchmark_2000.js';
+import { load, match } from '../common/load';
+import { print } from '../common/print';
+import { Meta, run, setup } from '../graphics/loop';
+import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads';
+import { BENCHMARK_2000 } from '../test/benchmark_2000';
 
 export const bench = (
   data: string,

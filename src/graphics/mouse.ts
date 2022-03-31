@@ -1,4 +1,4 @@
-import { Board, DONT_SKIP, getBoardIo, SKIP_MULTIPLYER } from '../logic/board.js';
+import { Board, DONT_SKIP, getBoardIo, SKIP_MULTIPLYER } from '../logic/board';
 
 export const handleMouse = (canvas: HTMLCanvasElement, board: Board) => {
   const { output, outSkips } = getBoardIo(board);

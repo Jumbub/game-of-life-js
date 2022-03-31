@@ -1,5 +1,5 @@
-import { Board, DONT_SKIP, getBoardIo } from '../logic/board.js';
-import { assignBoardPadding } from '../logic/padding.js';
+import { Board, DONT_SKIP, getBoardIo } from '../logic/board';
+import { assignBoardPadding } from '../logic/padding';
 
 export const load = (board: Board, data: string) => {
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data loader');
