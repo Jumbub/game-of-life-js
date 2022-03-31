@@ -1,7 +1,7 @@
 import { BENCHMARK } from '../../common/benchmark';
 import { bench } from './../bench';
 
-export const benchAll = async () => {
+(async () => {
   sessionStorage.clear();
 
   const THREAD_COUNT = navigator.hardwareConcurrency;
@@ -14,4 +14,4 @@ export const benchAll = async () => {
   console.log({
     orderedSeconds: Object.keys(sessionStorage).sort(),
   });
-};
+})();

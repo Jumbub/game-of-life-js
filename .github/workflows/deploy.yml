@@ -32,7 +32,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Upload to S3
-        run: aws s3 sync public s3://${{ secrets.AWS_S3_BUCKET }} --delete
+        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET }} --delete
 
       - name: Invalidate cloudfront cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION }} --paths "/*"

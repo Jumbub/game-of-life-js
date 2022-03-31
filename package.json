@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "description": "front? js. back? js. infra? js. optimising game of life? js.",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
+    "dev": "parcel",
+    "build": "parcel build",
     "serve": "npm run serve:patch && http-server -c-1 dist",
     "serve:patch": "grep require-corp ./node_modules/http-server/bin/http-server || sed -i 's/createServer(options)/createServer({...options, headers: {\"Cross-Origin-Embedder-Policy\": \"require-corp\", \"Cross-Origin-Opener-Policy\": \"same-origin\"}})/' ./node_modules/http-server/bin/http-server"
   },
@@ -18,9 +18,9 @@
     "parcel": "^2.4.0"
   },
   "targets": {
-    "frontend": {
+    "home": {
       "source": "src/index.html",
-      "outputFormat": "esmodule"
+      "publicUrl": "/"
     }
   }
 }

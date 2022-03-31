@@ -2,12 +2,27 @@
 <head>
   <style>
     body {
-      margin: 0;
-      width: 100vw;
-      height: 100vh;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 10px;
+      background-color: black;
+      border: 2px solid red;
+      color: white;
+    }
+    a {
+      color: white;
+      display: block;
     }
   </style>
 </head>
 <body>
-  <script type="module" src="main.ts" ></script>
+  <a href="./demo/index.html">Demo</a>
+  <br/>
+  <a href="./benchmark/index.html">Benchmark</a>
+  <br/>
+  <a href="./benchmark/all/index.html">Benchmark permutations</a>
+  <br/>
+  <a href="./test/index.html">Test</a>
 </body>

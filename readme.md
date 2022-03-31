@@ -8,8 +8,8 @@ This repository documents transpiling (by hand) a [C++ application](https://gith
 
 > At this point the C++ and TypeScript are largely identical (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/readme/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
 
-- [Demo app - https://gameoflife.jamiebray.me](https://gameoflife.jamiebray.me/)
-- [Run the benchmark - https://gameoflife.jamiebray.me/?benchmark=true](https://gameoflife.jamiebray.me/?benchmark=true/)
+- [Demo app - https://gameoflife.jamiebray.me](https://gameoflife.jamiebray.me/index.html)
+- [Run the benchmark - https://gameoflife.jamiebray.me/benchmark/index.html](https://gameoflife.jamiebray.me/benchmark/index.html)
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
 
@@ -17,27 +17,27 @@ This repository documents transpiling (by hand) a [C++ application](https://gith
 
 ## Gettings started
 
-### Install dependencies
-
 `npm install`
-
-### Build and serve
 
 `npm run build`
 
 `npm run serve`
 
-### Running the app
+### Run demo [(live)](https://gameoflife.jamiebray.me/index.html)
 
 http://localhost:8080/
 
-### Running the tests
+### Run benchmark [(live)](https://gameoflife.jamiebray.me/benchmark/index.html)
 
-http://localhost:8080/test
+http://localhost:8080/benchmark/
 
-### Running a benchmark
+### Run tests [(live)](https://gameoflife.jamiebray.me/test/index.html)
 
-http://localhost:8080/?benchmark=true
+http://localhost:8080/test/
+
+### Run benchmark flag permutation testing [(live)](https://gameoflife.jamiebray.me/benchmark/all/index.html)
+
+http://localhost:8080/benchmark/all
 
 <br/>
 

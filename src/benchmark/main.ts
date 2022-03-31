@@ -3,7 +3,7 @@ import { bench } from './bench';
 import { parseNumberOrDefault } from '../parseNumberOrDefault';
 import { random } from '../common/load';
 
-export const benchTest = async () => {
+(async () => {
   const params = new URLSearchParams(location.search);
   const width = parseNumberOrDefault(params.get('width'), 2560);
   const height = parseNumberOrDefault(params.get('height'), 1440);
@@ -13,4 +13,4 @@ export const benchTest = async () => {
   const data = width === 2560 && height === 1440 ? BENCHMARK : random((width + 2) * (height + 2));
 
   await bench(data, width, height, maxGenerations, rendersPerSecond);
-};
+})();

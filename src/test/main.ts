@@ -10,7 +10,7 @@ import { BENCHMARK_2 } from './benchmark_2';
 import { BENCHMARK_2000 } from './benchmark_2000';
 import { BENCHMARK_3 } from './benchmark_3';
 
-export const test = async () => {
+(async () => {
   const compare = async (label: string, board: Board, data: string) => {
     if (!match(board, data)) {
       print(`${label} failed...`);
@@ -59,4 +59,4 @@ export const test = async () => {
     load(meta.board, BENCHMARK);
     run(meta);
   })();
-};
+})();
