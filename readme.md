@@ -147,6 +147,14 @@ Could it be that the JS optimization engine handles bundled JS better?
 
 [e082d72212f74a69f742b2344681b6c174016e00](https://github.com/Jumbub/game-of-life-js/commit/e082d72212f74a69f742b2344681b6c174016e00)
 
+### Changing the title is slow (3.7s)
+
+Consistently getting a 2-3% increase in performance by not modifying the title on every render.
+
+I noticed this because there was a linear increase in "Node" memory usage, which dissapeared after changing the title.
+
+[824092fba80eed0546fde1f77142580844adc340](https://github.com/Jumbub/game-of-life-js/commit/824092fba80eed0546fde1f77142580844adc340)
+
 <br/>
 
 ## Interesting findings
