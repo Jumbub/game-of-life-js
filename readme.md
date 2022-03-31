@@ -236,3 +236,11 @@ On my primary account I was getting a consistent 4.95s (±0.05s), but on the gue
 I have quite a few extensions - AdBlock, Bitwarden, Honey, Javascript Switcher, Vimium, React dev tools - did not spend the time to find a specific culprit - I assume this would be the culprit, but I can't be sure.
 
 Disabling all extensions knocked me down to a 4.89s (which I got 4 times in a row), but that still didn't match the performance of the guest account.
+
+### Message via atomics
+
+Communication comparisson between `postMessage` vs `Atomics.notify`
+
+https://github.com/Jumbub/game-of-life-js/compare/2ed12fd...9a52f8e
+
+Messaging is 3.8s, atomics are 3.6s
