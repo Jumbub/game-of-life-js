@@ -42,7 +42,10 @@ export const setup = async (
     onkeydown = () => (generationsAndMax[1] = 0);
 
     // Boot primary worker, and only resolve setup when it's ready
-    const primaryWorker = new Worker('/logic/primaryWorker.js', { name: 'worker-primary', type: 'module' });
+    const primaryWorker = new Worker(new URL('../logic/primaryWorker', import.meta.url), {
+      name: 'worker-primary',
+      type: 'module',
+    });
     primaryWorker.addEventListener('message', ({ data: status }: MessageEvent<string>) => {
       if (status !== 'ready') reject('Primary worker failed to initialize');
       else resolve({ ...meta, primaryWorker });
