@@ -78,13 +78,6 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   const jobs = createJobs(jobsN, board.width, board.height);
   const signals = createJobSignals(jobs.length);
 
-  const processJobI = (i: number) => {
-    const [beginI, endI] = jobs[i];
-    const { input, output, inSkips, outSkips } = getBoardIo(board);
-    nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
-  };
-
-  // Note: likely improvements by moving this into the setup function
   workers.forEach(worker => {
     const message: BootMessage = {
       board,
@@ -101,7 +94,7 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
 
     // Processing
     notifyStartJobs(signals);
-    while (requestJobToProcess(signals, processJobI)) {}
+    while (requestJobToProcess(signals, jobs, board)) {}
     waitForAllJobsToComplete(signals);
 
     // Post-processing

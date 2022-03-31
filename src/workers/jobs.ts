@@ -1,3 +1,6 @@
+import { Board } from '../logic/board.js';
+import { nextBoardSection } from '../logic/next.js';
+
 enum Index {
   JOB_COUNT,
   NEXT_JOB,
@@ -30,14 +33,22 @@ export const notifyStartJobs = (signals: JobSignals) => {
   Atomics.notify(signals, Index.DONE_ALL);
 };
 
-export const requestJobToProcess = (signals: JobSignals, lambda: (i: number) => void) => {
+export const requestJobToProcess = (signals: JobSignals, jobs: number[][], board: Board) => {
   const jobI = Atomics.add(signals, Index.NEXT_JOB, 1);
   if (jobI >= signals[Index.JOB_COUNT]) {
     Atomics.store(signals, Index.CONSUMED_ALL, 1);
     return false;
   }
 
-  lambda(jobI);
+  nextBoardSection(
+    jobs[jobI][0],
+    jobs[jobI][1],
+    board.width,
+    board.cells[board.cellsInput[0]],
+    board.cells[1 - board.cellsInput[0]],
+    board.skips[board.skipsInput[0]],
+    board.skips[1 - board.skipsInput[0]],
+  );
 
   const previousDoneCount = Atomics.add(signals, Index.DONE_COUNT, 1);
   const isLastJobDone = previousDoneCount === signals[Index.JOB_COUNT] - 1;
