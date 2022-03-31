@@ -1,21 +1,38 @@
 import { Board } from '../logic/board.js';
-import { startNextBoardLoop } from '../logic/next.js';
+import { createJobs, startNextBoardLoop } from '../logic/next.js';
+import { createJobSignals } from './jobs.js';
 import { notifyReady } from './ready.js';
 import { secondaryFactoryMulti } from './secondary.js';
+import { BootMessage } from './secondary.worker.js';
 
-export type WorkerCountMessage = number;
-
-export type StartPrimaryMessage = {
-  generationsAndMax: Uint32Array; // [computations, maxGenerations]
+export type BootPrimaryMessage = {
   board: Board;
+  workerCount: number;
   jobCount: number;
+  generationsAndMax: Uint32Array; // [computations, maxGenerations]
 };
 
-onmessage = async (event: MessageEvent<WorkerCountMessage>) => {
-  const secondaryWorkers = await secondaryFactoryMulti(event.data - 1);
+export type StartPrimaryMessage = unknown;
 
-  onmessage = (event: MessageEvent<StartPrimaryMessage>) => {
-    startNextBoardLoop(event.data.generationsAndMax, event.data.board, secondaryWorkers, event.data.jobCount);
+onmessage = async (event: MessageEvent<BootPrimaryMessage>) => {
+  const {
+    data: { jobCount, workerCount, board, generationsAndMax },
+  } = event;
+  const secondaryWorkers = await secondaryFactoryMulti(workerCount - 1);
+  const signals = createJobSignals(jobCount);
+  const jobs = createJobs(jobCount, board.width, board.height);
+
+  secondaryWorkers.forEach(worker => {
+    const message: BootMessage = {
+      jobs,
+      board,
+      signals,
+    };
+    worker.postMessage(message);
+  });
+
+  onmessage = () => {
+    startNextBoardLoop(generationsAndMax, board, jobCount, signals);
   };
 
   notifyReady();

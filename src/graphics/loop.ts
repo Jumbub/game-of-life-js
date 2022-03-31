@@ -30,17 +30,18 @@ export const setup = async (
   const generationsAndMax = new Uint32Array(new SharedArrayBuffer(8));
   generationsAndMax[0] = 0;
   generationsAndMax[1] = maxGenerations === Infinity ? Math.pow(2, 32) : maxGenerations;
+  const board = newBoard(viewWidth, viewHeight);
 
   return {
     ...newContext(viewWidth, viewHeight),
-    board: newBoard(viewWidth, viewHeight),
+    board,
     onDone,
     jobCount,
     renders: 0,
     generationsAndMax,
     rendersMinimumMilliseconds,
     imageData: new ImageData(viewWidth + 2, viewHeight + 2),
-    primaryWorker: await primaryFactory(workerCount),
+    primaryWorker: await primaryFactory({ board, jobCount, workerCount, generationsAndMax }),
   };
 };
 

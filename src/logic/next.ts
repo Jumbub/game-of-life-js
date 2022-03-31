@@ -1,5 +1,4 @@
-import { createJobSignals, notifyStartJobs, requestJobToProcess, waitForAllJobsToComplete } from '../workers/jobs.js';
-import { BootMessage } from '../workers/secondary.worker.js';
+import { JobSignals, notifyStartJobs, requestJobToProcess, waitForAllJobsToComplete } from '../workers/jobs.js';
 import { Board, Cells, DONT_SKIP, fillSkips, flipBoardIo, getBoardIo, Skips, SKIP_MULTIPLYER } from './board.js';
 import { assignBoardPadding } from './padding.js';
 
@@ -41,6 +40,7 @@ export const nextBoardSection = (
   outSkip: Skips,
 ) => {
   fillSkips(outSkip, i + width - 1, endI - width + 1);
+
   while (i < endI) {
     while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
@@ -54,7 +54,7 @@ export const nextBoardSection = (
   }
 };
 
-const createJobs = (segments: number, width: number, height: number): [number, number][] => {
+export const createJobs = (segments: number, width: number, height: number): [number, number][] => {
   let endI = width;
   const segmentSize = (Math.floor(height / segments) + (height % segments)) * width;
   return [...Array(segments)].map(() => {
@@ -74,25 +74,19 @@ const setSkipBorders = (board: Board, jobs: [number, number][]) => {
   }
 };
 
-export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[], jobsN: number) => {
+export const startNextBoardLoop = (
+  generationsAndMax: Uint32Array,
+  board: Board,
+  jobsN: number,
+  signals: JobSignals,
+) => {
   const jobs = createJobs(jobsN, board.width, board.height);
-  const signals = createJobSignals(jobs.length);
 
   const processJobI = (i: number) => {
     const [beginI, endI] = jobs[i];
     const { input, output, inSkips, outSkips } = getBoardIo(board);
     nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
   };
-
-  // Note: likely improvements by moving this into the setup function
-  workers.forEach(worker => {
-    const message: BootMessage = {
-      board,
-      jobs,
-      signals,
-    };
-    worker.postMessage(message);
-  });
 
   while (generationsAndMax[0] < generationsAndMax[1]) {
     // Pre-processing

@@ -1,11 +1,8 @@
-import { WorkerCountMessage } from './primary.worker.js';
+import { BootPrimaryMessage } from './primary.worker.js';
 import { waitForReady } from './ready.js';
 
-export const primaryFactory = (workerCount: number) => {
+export const primaryFactory = (options: BootPrimaryMessage) => {
   const primary = new Worker('/workers/primary.worker.js', { name: 'primary', type: 'module' });
-
-  const message: WorkerCountMessage = workerCount;
-  primary.postMessage(message);
-
+  primary.postMessage(options);
   return waitForReady(primary);
 };
