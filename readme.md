@@ -43,19 +43,19 @@ http://localhost:8080/benchmark/all
 
 ## Log of benchmark improvements
 
-### First working benchmark (~75s)
+### First working benchmark (75s)
 
 Naive and simple manual transpilation of the [C++ implementation](https://github.com/Jumbub/game-of-speed) to Typescript, without any advanced Javascript (typed arrays, workers, etc).
 
 [c15cae4d00beb59f5e6e50f495a323eca3f24eb5](https://github.com/Jumbub/game-of-life-js/commit/9227c6a55ede200a1b6fe827c93010963e704f3d)
 
-### Use smaller typed arrays for skip cells (~53s)
+### Use smaller typed arrays for skip cells (53s)
 
 First attempt at using typed arrays, using Uint8Arrays to store the skip data.
 
 [01c5c850ccef4075d01441983a55cae6aa127c2a](https://github.com/Jumbub/game-of-life-js/commit/01c5c850ccef4075d01441983a55cae6aa127c2a)
 
-### Use smaller typed arrays for data cells (~37s)
+### Use smaller typed arrays for data cells (37s)
 
 Use Uint8Array's for storing state of a cell, then create the Uint32Array required for rendering at render time.
 
@@ -63,13 +63,13 @@ This benchmark also adds a requirement that the renders per second never drops b
 
 [1263580a75a6ac861616411fddc1a9605e995292](https://github.com/Jumbub/game-of-life-js/commit/1263580a75a6ac861616411fddc1a9605e995292)
 
-### Moving the computation into a worker (~28s)
+### Moving the computation into a worker (28s)
 
 Create a single worker which listens for computation requests from the primary thread.
 
 [13ce69fd81bf3b28271993629645bef6896d78b4](https://github.com/Jumbub/game-of-life-js/commit/13ce69fd81bf3b28271993629645bef6896d78b4)
 
-### Move the computation loop into a dedicated worker (~19s)
+### Move the computation loop into a dedicated worker (19s)
 
 Create a dedicated worker for running the loop.
 
@@ -77,7 +77,7 @@ Allowing the computation scheduling to run synchronously (removed `setTimeout(jo
 
 [e67e46a797115aca4bd168210c0201507baa9c41](https://github.com/Jumbub/game-of-life-js/commit/e67e46a797115aca4bd168210c0201507baa9c41)
 
-### Mutiple workers computing simultaneously (??)
+### Mutiple workers computing simultaneously (12s)
 
 Currently most optimal with 16 workers, but I suspect that number will come back down to 4 once I've optimised more operations.
 
@@ -85,25 +85,59 @@ Currently most optimal with 16 workers, but I suspect that number will come back
 8 threads: 11.74s
 16 threads: 11.45s
 
-[TODO](https://github.com/Jumbub/game-of-life-js/commit/TODO)
+[97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-life-js/commit/97067de019fc6045240d157da1ca130c77dd27dd)
 
-### Mutiple workers computing simultaneously (??)
+### Mutiple workers computing simultaneously (11.8s)
 
 Wait for workers to mark themselves as "ready" before starting computations.
 
 [e19df8b319c81b59b05933bd3a60cf74d3b0b9fb](https://github.com/Jumbub/game-of-life-js/commit/e19df8b319c81b59b05933bd3a60cf74d3b0b9fb)
 
-### Using Atomics to communicate, rather than messages (~10.3s)
+### Using Atomics to communicate, rather than messages (13.5s)
 
-The improvement is quite small, but is consistently faster than messaging.
+~The improvement is quite small, but is consistently faster than messaging.~
+
+For some reason I thought this was running faster than the previous commit, but when re-running these benchmarks it is clearly much slower.
 
 [301c1fb959d2d438fc6d6c8dfe0111e11821b39c](https://github.com/Jumbub/game-of-life-js/commit/301c1fb959d2d438fc6d6c8dfe0111e11821b39c)
 
-### Re-use ImageData between frames (~9.7s)
+### Re-use ImageData between frames (12s)
 
-Memory allocation is killer (1ms per frame on the primary thread).
+Unecessary memory allocation every render
 
-[b7794dcc91cd31f74f6654374420215751abb293](https://github.com/Jumbub/game-of-life-js/commit/b7794dcc91cd31f74f6654374420215751abb293)
+[79ff8a0d170bc0e54ef6ce16f08267560fbf1180](https://github.com/Jumbub/game-of-life-js/commit/79ff8a0d170bc0e54ef6ce16f08267560fbf1180)
+
+### Blocking while loop in worker (9.2s)
+
+Replace timers with blocking while loop
+
+[1f72fc965fcce195282dc0b99bc171401eb7f877](https://github.com/Jumbub/game-of-life-js/commit/1f72fc965fcce195282dc0b99bc171401eb7f877)
+
+### Skip faster (8.3s)
+
+Increase skip multiplyer from 2 to 8
+
+[ce1c2e532af3341120efb258419cae4cde97a198](https://github.com/Jumbub/game-of-life-js/commit/ce1c2e532af3341120efb258419cae4cde97a198)
+
+### Lots of things (6.4s)
+
+Remove call to `requestAnimationFrame` from 30 fps interval timer, and just call render lambda directly.
+
+Run one less secondary worker, and do computations on primary worker.
+
+[todo](https://github.com/Jumbub/game-of-life-js/commit/todo)
+
+### Multi threaded array fill (5s)
+
+Perform the `.fill` operation simultaneously on multiple threads for the skip array.
+
+[e3d355ea2669daf6adfad30a582df510346a0adf](https://github.com/Jumbub/game-of-life-js/commit/e3d355ea2669daf6adfad30a582df510346a0adf)
+
+### Bundler (~3.8s)
+
+Move to the Parcel bundler.
+
+[e082d72212f74a69f742b2344681b6c174016e00](https://github.com/Jumbub/game-of-life-js/commit/e082d72212f74a69f742b2344681b6c174016e00)
 
 <br/>
 
