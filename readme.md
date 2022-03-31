@@ -133,9 +133,17 @@ Perform the `.fill` operation simultaneously on multiple threads for the skip ar
 
 [e3d355ea2669daf6adfad30a582df510346a0adf](https://github.com/Jumbub/game-of-life-js/commit/e3d355ea2669daf6adfad30a582df510346a0adf)
 
-### Bundler (~3.8s)
+### Bundler (3.8s)
 
 Move to the Parcel bundler.
+
+I'm not exactly sure what's making this so much faster. Building with `--no-optimizations` is the same performance.
+
+Could it be that there are less files to download?
+
+Could it be that the way Parcel handles modules is faster?
+
+Could it be that the JS optimization engine handles bundled JS better?
 
 [e082d72212f74a69f742b2344681b6c174016e00](https://github.com/Jumbub/game-of-life-js/commit/e082d72212f74a69f742b2344681b6c174016e00)
 
