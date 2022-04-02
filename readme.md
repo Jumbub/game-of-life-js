@@ -227,6 +227,8 @@ I came to the realisation that the position of the mouse had a dramatic impact o
 
 > Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
 
+> TODO: compare results with primary Chrome user and guest
+
 ### Chrome user matters
 
 Running benchmarks as the "guest" account will mean you don't have any extensions running in the background, affecting your performance.
