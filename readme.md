@@ -252,3 +252,11 @@ Communication comparisson between `postMessage` vs `Atomics.notify`
 https://github.com/Jumbub/game-of-life-js/compare/2ed12fd...9a52f8e
 
 Messaging is 3.8s, atomics are 3.6s
+
+### Burn legacy files
+
+For some reason, without doing an `rm -rf dist .parcel-cache` before every build, Chrome was still retrieving legacy JS bundles.
+
+This is definitely a cause of a lot of weird benchmark issues, so was a pain to find.
+
+TODO: investigate exactly where the issue is stemming from
