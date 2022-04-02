@@ -16,10 +16,7 @@ import { parseNumberOrDefault } from '../parseNumberOrDefault';
     1000 / rendersPerSecond,
     PROBABLY_OPTIMAL_THREAD_COUNT,
     PROBABLY_OPTIMAL_JOB_COUNT,
-    () => {
-      meta.primaryWorker.terminate();
-    },
   );
   load(meta.board, createNonDeterministicBenchmark(innerWidth, innerHeight));
-  run(meta);
+  await run(meta);
 })();

@@ -15,7 +15,6 @@ export type Meta = {
   rendersMinimumMilliseconds: number;
   jobCount: number;
   imageData: ImageData;
-  onDone: (meta: Meta) => void;
 };
 
 export const setup = async (
@@ -25,7 +24,6 @@ export const setup = async (
   rendersMinimumMilliseconds: number,
   workerCount: number,
   jobCount: number,
-  onDone: (meta: Meta) => void,
 ) => {
   const generationsAndMax = new Uint32Array(new SharedArrayBuffer(8));
   generationsAndMax[0] = 0;
@@ -34,7 +32,6 @@ export const setup = async (
   return {
     ...newContext(viewWidth, viewHeight),
     board: newBoard(viewWidth, viewHeight),
-    onDone,
     jobCount,
     renders: 0,
     generationsAndMax,
@@ -44,26 +41,28 @@ export const setup = async (
   };
 };
 
-export const run = (meta: Meta) => {
-  handleMouse(meta.canvas, meta.board);
+export const run = (meta: Meta) =>
+  new Promise(resolve => {
+    handleMouse(meta.canvas, meta.board);
 
-  const interval = setInterval(() => {
-    const [generations, maxGenerations] = meta.generationsAndMax;
+    const interval = setInterval(() => {
+      const [generations, maxGenerations] = meta.generationsAndMax;
 
-    render(meta.imageData, meta.board, meta.context);
-    meta.renders++;
+      render(meta.imageData, meta.board, meta.context);
+      meta.renders++;
 
-    if (generations >= maxGenerations) {
-      clearInterval(interval);
-      meta.onDone(meta);
-      return;
-    }
-  }, meta.rendersMinimumMilliseconds);
+      if (generations >= maxGenerations) {
+        clearInterval(interval);
+        meta.primaryWorker.terminate();
+        resolve(meta);
+        return;
+      }
+    }, meta.rendersMinimumMilliseconds);
 
-  const message: StartPrimaryMessage = {
-    board: meta.board,
-    jobCount: meta.jobCount,
-    generationsAndMax: meta.generationsAndMax,
-  };
-  meta.primaryWorker.postMessage(message);
-};
+    const message: StartPrimaryMessage = {
+      board: meta.board,
+      jobCount: meta.jobCount,
+      generationsAndMax: meta.generationsAndMax,
+    };
+    meta.primaryWorker.postMessage(message);
+  });

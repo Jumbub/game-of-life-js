@@ -54,9 +54,9 @@ export const bench = (
       resolve(true);
     };
 
-    const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, workerCount, jobCount, onDone);
+    const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, workerCount, jobCount);
     load(meta.board, data);
 
     const start = performance.now();
-    run(meta);
+    await run(meta);
   });
