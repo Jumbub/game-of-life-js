@@ -75,7 +75,7 @@ const assignJobs = (jobs: Jobs, rawTimes: Times, { width, height }: Board) => {
     .map((_, i) => rawTimes[i])
     .map(value => Math.max(1, value));
   const maxTime = times.reduce((acc, cur) => Math.max(acc, cur), 0);
-  const invTimes = times.map(time => maxTime / time);
+  const invTimes = times.map(time => Math.log2(1 + maxTime / time));
   const sumInvTimes = sum(invTimes);
   const ratios = invTimes.map(time => time / sumInvTimes);
 
