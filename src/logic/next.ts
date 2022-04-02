@@ -62,13 +62,14 @@ const setSkipBorders = (board: Board, jobs: Jobs) => {
   const { outSkips } = getBoardIo(board);
   const { width, height } = board;
 
-  for (let i = 0; i < jobs.length / 2; i++) {
+  fillSkips(outSkips, 0, width * 2 + 1);
+  for (let i = 1; i < jobs.length / 2; i++) {
     const beginI = Atomics.load(jobs, i * 2);
     const start = Math.min(Math.max(beginI - width, 0), width * height);
     const stop = Math.min(Math.max(beginI + width, 0), width * height);
     fillSkips(outSkips, start, stop);
   }
-  fillSkips(outSkips, width * (height - 2), width * height);
+  fillSkips(outSkips, width * (height - 2) - 1, width * height);
 };
 
 const sum = (arr: number[]) => arr.reduce((acc, cur) => acc + cur, 0);
@@ -102,6 +103,7 @@ const assignJobs = (jobs: Jobs, rawTimes: Times, { width, height }: Board) => {
     Atomics.store(jobs, i * 2, segments[i][0]);
     Atomics.store(jobs, i * 2 + 1, segments[i][1]);
   }
+  Atomics.store(jobs, jobs.length - 1, width * (height - 1));
 };
 
 export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[]) => {
@@ -149,10 +151,8 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
     const end = performance.now();
     Atomics.store(times, times.length - 1, (end - start) * 1000);
     jobsDone.forEach((_, i) => {
-      console.log(Atomics.wait(jobsDone, i, NOT_DONE));
+      Atomics.wait(jobsDone, i, NOT_DONE);
     });
-
-    console.log('pri finished waiting');
 
     // Post-processing
     assignBoardPadding(board);
