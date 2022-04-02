@@ -155,6 +155,12 @@ I noticed this because there was a linear increase in "Node" memory usage, which
 
 [824092fba80eed0546fde1f77142580844adc340](https://github.com/Jumbub/game-of-life-js/commit/824092fba80eed0546fde1f77142580844adc340)
 
+### Delete duplicate operations (3.4s)
+
+Free performance by just removing 3 lines of code.
+
+[09a1a0a2d68ba6bb7f7915fcbb57f482900f1069](https://github.com/Jumbub/game-of-life-js/commit/09a1a0a2d68ba6bb7f7915fcbb57f482900f1069)
+
 <br/>
 
 ## Interesting findings
