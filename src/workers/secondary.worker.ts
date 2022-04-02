@@ -12,6 +12,7 @@ export type BootMessage = {
 
 onmessage = ({ data: { board, jobI, jobs, jobsDone, times } }: MessageEvent<BootMessage>) => {
   while (Atomics.wait(jobsDone, jobI, DONE)) {
+    console.log(`worker ${jobI} started`);
     const start = performance.now();
     const { input, output, inSkips, outSkips } = getBoardIo(board);
     nextBoardSection(
@@ -27,6 +28,7 @@ onmessage = ({ data: { board, jobI, jobs, jobsDone, times } }: MessageEvent<Boot
     Atomics.store(times, jobI, (end - start) * 1000);
     Atomics.store(jobsDone, jobI, DONE);
     Atomics.notify(jobsDone, jobI);
+    console.log(`worker ${jobI} done`);
   }
 };
 

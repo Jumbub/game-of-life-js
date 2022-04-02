@@ -1,41 +1,43 @@
 import { load, match } from '../common/load';
 import { print } from '../common/print';
-import { Meta, run, setup } from '../graphics/loop';
-import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads';
+import { run, setup } from '../graphics/loop';
+import { PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads';
 import { BENCHMARK_2000 } from '../test/benchmark_2000';
 
-export const bench = (
+export const bench = async (
   data: string,
   width: number,
   height: number,
   maxGenerations: number,
   rendersPerSecond: number,
   workerCount: number = PROBABLY_OPTIMAL_THREAD_COUNT,
-  jobCount: number = PROBABLY_OPTIMAL_JOB_COUNT,
-) =>
-  new Promise(async resolve => {
-    const onDone = (meta: Meta) => {
-      const stop = performance.now();
+) => {
+  const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, workerCount);
+  load(meta.board, data);
 
-      meta.primaryWorker.terminate();
+  const start = performance.now();
+  await run(meta);
+  const stop = performance.now();
 
-      const seconds = (stop - start) / 1000;
-      const actualRendersPerSecond = meta.renders / seconds;
-      const now = new Date();
+  meta.primaryWorker.terminate();
 
-      const validConfiguration = width === 2560 && height === 1440 && maxGenerations === 2000;
-      const validGraphics = actualRendersPerSecond >= rendersPerSecond * 0.999;
-      const validLogic = validConfiguration && match(meta.board, BENCHMARK_2000);
+  const seconds = (stop - start) / 1000;
+  const actualRendersPerSecond = meta.renders / seconds;
+  const now = new Date();
 
-      const report = `${
-        !validConfiguration
-          ? '*INELIGIBLE CONFIGURATION*\n\n'
-          : !validGraphics
-          ? '*TOO FEW RENDERS*\n\n'
-          : !validLogic
-          ? '*FINAL STATE IS WRONG*\n\n'
-          : ''
-      }seconds: ${seconds.toFixed(2)}s
+  const validConfiguration = width === 2560 && height === 1440 && maxGenerations === 2000;
+  const validGraphics = actualRendersPerSecond >= rendersPerSecond * 0.999;
+  const validLogic = validConfiguration && match(meta.board, BENCHMARK_2000);
+
+  const report = `${
+    !validConfiguration
+      ? '*INELIGIBLE CONFIGURATION*\n\n'
+      : !validGraphics
+      ? '*TOO FEW RENDERS*\n\n'
+      : !validLogic
+      ? '*FINAL STATE IS WRONG*\n\n'
+      : ''
+  }seconds: ${seconds.toFixed(2)}s
       generations/second: ${(meta.generationsAndMax[0] / seconds).toFixed(2)}
       renders/second: ${actualRendersPerSecond.toFixed(2)}
 
@@ -43,20 +45,10 @@ export const bench = (
       width: ${width}
       height: ${height}
       workerCount: ${workerCount}
-      jobCount: ${jobCount}
 
       now: ${now.toISOString()}`.replace(/      /g, '');
 
-      print(report);
-      console.log(report);
-      sessionStorage.setItem(`report-${seconds}-${workerCount}-${jobCount}`, report);
-
-      resolve(true);
-    };
-
-    const meta = await setup(width, height, maxGenerations, 1000 / rendersPerSecond, workerCount, jobCount);
-    load(meta.board, data);
-
-    const start = performance.now();
-    await run(meta);
-  });
+  print(report);
+  console.log(report);
+  sessionStorage.setItem(`report-${seconds}-${workerCount}`, report);
+};

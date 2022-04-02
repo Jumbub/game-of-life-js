@@ -13,7 +13,6 @@ export type Meta = {
   generationsAndMax: Uint32Array; // [computations, maxGenerations]
   renders: number;
   rendersMinimumMilliseconds: number;
-  jobCount: number;
   imageData: ImageData;
 };
 
@@ -23,7 +22,6 @@ export const setup = async (
   maxGenerations: number,
   rendersMinimumMilliseconds: number,
   workerCount: number,
-  jobCount: number,
 ) => {
   const generationsAndMax = new Uint32Array(new SharedArrayBuffer(8));
   generationsAndMax[0] = 0;
@@ -32,7 +30,6 @@ export const setup = async (
   return {
     ...newContext(viewWidth, viewHeight),
     board: newBoard(viewWidth, viewHeight),
-    jobCount,
     renders: 0,
     generationsAndMax,
     rendersMinimumMilliseconds,
@@ -61,7 +58,6 @@ export const run = (meta: Meta) =>
 
     const message: StartPrimaryMessage = {
       board: meta.board,
-      jobCount: meta.jobCount,
       generationsAndMax: meta.generationsAndMax,
     };
     meta.primaryWorker.postMessage(message);

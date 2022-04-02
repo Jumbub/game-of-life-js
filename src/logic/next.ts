@@ -42,6 +42,8 @@ export const nextBoardSection = (
   inSkip: Skips,
   outSkip: Skips,
 ) => {
+  if ((i - 1) % 2562 !== 0) debugger;
+  if ((endI + 1) % 2562 !== 0) debugger;
   fillSkips(outSkip, i + width - 1, endI - width + 1);
   while (i < endI) {
     while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
@@ -57,14 +59,16 @@ export const nextBoardSection = (
 };
 
 const setSkipBorders = (board: Board, jobs: Jobs) => {
-  const { width } = board;
   const { outSkips } = getBoardIo(board);
+  const { width, height } = board;
 
-  for (let i = 0; i < jobs.length; i++) {
-    const beginI = jobs[i * 2];
-    fillSkips(outSkips, beginI - width - 1, beginI + width - 1);
+  for (let i = 0; i < jobs.length / 2; i++) {
+    const beginI = Atomics.load(jobs, i * 2);
+    const start = Math.min(Math.max(beginI - width, 0), width * height);
+    const stop = Math.min(Math.max(beginI + width, 0), width * height);
+    fillSkips(outSkips, start, stop);
   }
-  // TODO: add fillskips for last region
+  fillSkips(outSkips, width * (height - 2), width * height);
 };
 
 const sum = (arr: number[]) => arr.reduce((acc, cur) => acc + cur, 0);
@@ -100,13 +104,13 @@ const assignJobs = (jobs: Jobs, rawTimes: Times, { width, height }: Board) => {
   }
 };
 
-export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[], _: number) => {
+export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[]) => {
   const jobsDone = new Int32Array(new SharedArrayBuffer(workers.length * Int32Array.BYTES_PER_ELEMENT));
   const jobs = new Int32Array(new SharedArrayBuffer(2 * (workers.length + 1) * Int32Array.BYTES_PER_ELEMENT));
   const times = new Int32Array(new SharedArrayBuffer((workers.length + 1) * Int32Array.BYTES_PER_ELEMENT));
 
+  jobsDone.forEach((_, i) => Atomics.store(jobsDone, i, DONE));
   times.forEach((_, i) => Atomics.store(times, i, 1));
-  assignJobs(jobs, times, board);
 
   // Note: likely improvements by moving this into the setup function
   workers.forEach((worker, jobI) => {
@@ -123,6 +127,7 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   while (generationsAndMax[0] < generationsAndMax[1]) {
     // Pre-processing
     flipBoardIo(board);
+    assignJobs(jobs, times, board);
     setSkipBorders(board, jobs);
 
     // Processing
@@ -143,11 +148,14 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
     );
     const end = performance.now();
     Atomics.store(times, times.length - 1, (end - start) * 1000);
-    jobsDone.forEach((_, i) => Atomics.wait(jobsDone, i, NOT_DONE));
+    jobsDone.forEach((_, i) => {
+      console.log(Atomics.wait(jobsDone, i, NOT_DONE));
+    });
+
+    console.log('pri finished waiting');
 
     // Post-processing
     assignBoardPadding(board);
-    assignJobs(jobs, times, board);
     generationsAndMax[0]++;
   }
 };
