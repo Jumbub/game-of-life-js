@@ -21,13 +21,10 @@ const isAlive = (i: number, cells: Cells, width: number) => {
 
 const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
   outSkip[~~((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i - width) / SKIP_MULTIPLYER)] = DONT_SKIP;
   outSkip[~~((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
   outSkip[~~((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~(i / SKIP_MULTIPLYER)] = DONT_SKIP;
   outSkip[~~((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
   outSkip[~~((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
-  outSkip[~~((i + width) / SKIP_MULTIPLYER)] = DONT_SKIP;
   outSkip[~~((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
 };
 
