@@ -52,13 +52,13 @@ export const nextBoardSection = (
 };
 
 const createJobs = (segments: number, width: number, height: number): [number, number][] => {
-  const cellsPerSegment = (width * height) / segments;
+  const cellsPerSegment = (width * height - width * 2) / segments;
   return Array(segments)
     .fill(0)
     .map((_, i) => {
       return [
-        Math.floor((i * cellsPerSegment) / width) * width,
-        Math.min(width * height, Math.floor(((i + 1) * cellsPerSegment) / width) * width),
+        width + Math.floor((i * cellsPerSegment) / width) * width,
+        width + Math.min(width * height, Math.floor(((i + 1) * cellsPerSegment) / width) * width),
       ];
     });
 };
