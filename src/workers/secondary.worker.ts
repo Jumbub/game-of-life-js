@@ -1,23 +1,23 @@
 import { Board, getBoardIo } from '../logic/board';
-import { nextBoardSection } from '../logic/next';
-import { JobSignals, requestJobToProcess, waitForJobs } from './jobs';
+import { DONE, Jobs, JobsDone, nextBoardSection } from '../logic/next';
 import { notifyReady } from './ready';
 
 export type BootMessage = {
   board: Board;
-  jobs: [beginI: number, endI: number][];
-  signals: JobSignals;
+  jobI: number;
+  jobs: Jobs;
+  jobsDone: JobsDone;
 };
 
-onmessage = ({ data: { board, jobs, signals } }: MessageEvent<BootMessage>) => {
-  const processJobI = (i: number) => {
-    const [beginI, endI] = jobs[i];
+onmessage = ({ data: { board, jobI, jobs, jobsDone } }: MessageEvent<BootMessage>) => {
+  console.log('hi', jobI);
+  while (Atomics.wait(jobsDone, jobI, DONE)) {
     const { input, output, inSkips, outSkips } = getBoardIo(board);
-    nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
-  };
-  while (waitForJobs(signals)) {
-    while (requestJobToProcess(signals, processJobI)) {}
+    nextBoardSection(jobs[jobI * 2], jobs[jobI * 2 + 1], board.width, input, output, inSkips, outSkips);
+    Atomics.store(jobsDone, jobI, DONE);
+    Atomics.notify(jobsDone, jobI);
   }
+  console.log('quit');
 };
 
 notifyReady();
