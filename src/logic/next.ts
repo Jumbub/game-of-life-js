@@ -4,6 +4,7 @@ import { assignBoardPadding } from './padding';
 
 export type JobsDone = Int32Array;
 export type Jobs = Int32Array;
+export type Times = Int32Array;
 export const DONE = 1;
 export const NOT_DONE = 0;
 
@@ -66,27 +67,46 @@ const setSkipBorders = (board: Board, jobs: Jobs) => {
   // TODO: add fillskips for last region
 };
 
-const assignBaseJobs = (jobs: Jobs, { width, height }: Board, segments: number) => {
-  const cellsPerSegment = (width * height - width * 2) / segments;
-  Array(segments)
+const sum = (arr: number[]) => arr.reduce((acc, cur) => acc + cur, 0);
+const assignJobs = (jobs: Jobs, rawTimes: Times, { width, height }: Board) => {
+  const times = Array(rawTimes.length)
     .fill(0)
-    .map((_, i) => {
-      return [
-        width + Math.floor((i * cellsPerSegment) / width) * width,
-        width + Math.min(width * height, Math.floor(((i + 1) * cellsPerSegment) / width) * width),
-      ];
-    })
-    .forEach(([beginI, endI], i) => {
-      jobs[i * 2] = beginI;
-      jobs[i * 2 + 1] = endI;
-    });
+    // .map((_, i) => Math.pow(i + 1, 2))
+    .map((_, i) => rawTimes[i])
+    .map(value => Math.max(1, value));
+  const maxTime = times.reduce((acc, cur) => Math.max(acc, cur), 0);
+  const invTimes = times.map(time => maxTime / time);
+  const sumInvTimes = sum(invTimes);
+  const ratios = invTimes.map(time => time / sumInvTimes);
+
+  const ratiosAccum = ratios
+    .reduce(
+      (acc, cur) => {
+        const lastEndI = acc[acc.length - 1][1];
+        return [...acc, [lastEndI, lastEndI + cur]];
+      },
+      [[0, 0]],
+    )
+    .slice(1);
+  const computeSize = width * (height - 2);
+  const segments = ratiosAccum.map(([beginI, endI]) => [
+    width + Math.floor((beginI * computeSize) / width) * width,
+    width + Math.min(Math.floor((endI * computeSize) / width) * width, computeSize),
+  ]);
+
+  for (let i = 0; i < rawTimes.length; i++) {
+    Atomics.store(jobs, i * 2, segments[i][0]);
+    Atomics.store(jobs, i * 2 + 1, segments[i][1]);
+  }
 };
 
 export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board, workers: Worker[], _: number) => {
   const jobsDone = new Int32Array(new SharedArrayBuffer(workers.length * Int32Array.BYTES_PER_ELEMENT));
   const jobs = new Int32Array(new SharedArrayBuffer(2 * (workers.length + 1) * Int32Array.BYTES_PER_ELEMENT));
+  const times = new Int32Array(new SharedArrayBuffer((workers.length + 1) * Int32Array.BYTES_PER_ELEMENT));
 
-  assignBaseJobs(jobs, board, workers.length + 1);
+  times.forEach((_, i) => Atomics.store(times, i, 1));
+  assignJobs(jobs, times, board);
 
   // Note: likely improvements by moving this into the setup function
   workers.forEach((worker, jobI) => {
@@ -95,6 +115,7 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
       board,
       jobs,
       jobsDone,
+      times,
     };
     worker.postMessage(message);
   });
@@ -109,13 +130,24 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
       Atomics.store(jobsDone, i, NOT_DONE);
       Atomics.notify(jobsDone, i);
     });
+    const start = performance.now();
     const { input, output, inSkips, outSkips } = getBoardIo(board);
-    console.log(jobs);
-    nextBoardSection(jobs[jobs.length - 2], jobs[jobs.length - 1], board.width, input, output, inSkips, outSkips);
+    nextBoardSection(
+      Atomics.load(jobs, jobs.length - 2) + 1,
+      Atomics.load(jobs, jobs.length - 1) - 1,
+      board.width,
+      input,
+      output,
+      inSkips,
+      outSkips,
+    );
+    const end = performance.now();
+    Atomics.store(times, times.length - 1, (end - start) * 1000);
     jobsDone.forEach((_, i) => Atomics.wait(jobsDone, i, NOT_DONE));
 
     // Post-processing
     assignBoardPadding(board);
+    assignJobs(jobs, times, board);
     generationsAndMax[0]++;
   }
 };
