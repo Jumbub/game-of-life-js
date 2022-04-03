@@ -360,3 +360,69 @@ const min = Math.min // outside loop
 ...
 const tilI = min(i + SKIP_MULTIPLYER, endI);
 ```
+
+### Fastest mod
+
+```
+// 2.95s
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
+  const floor = Math.floor;
+  outSkip[floor((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+};
+
+// 2.84s
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
+  outSkip[Math.floor((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[Math.floor((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+};
+
+// 2.78s
+const floor = Math.floor;
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
+  outSkip[floor((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+};
+
+// 2.75
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number, floor: typeof Math.floor) => {
+  outSkip[floor((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[floor((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+};
+
+// 2.55s
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
+  outSkip[0 | ((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[0 | ((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[0 | ((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[0 | ((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[0 | ((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[0 | ((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+};
+
+// 2.55s
+const revokeSkipForNeighbours = (i: number, outSkip: Skips, width: number) => {
+  outSkip[~~((i - width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i - width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + width - 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+  outSkip[~~((i + width + 1) / SKIP_MULTIPLYER)] = DONT_SKIP;
+};
+```
