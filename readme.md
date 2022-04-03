@@ -119,13 +119,9 @@ Increase skip multiplyer from 2 to 8
 
 [ce1c2e532af3341120efb258419cae4cde97a198](https://github.com/Jumbub/game-of-life-js/commit/ce1c2e532af3341120efb258419cae4cde97a198)
 
-### Lots of things (6.4s)
+### Mess of changes un-tidily committed (6.4s)
 
-Don't bother calling `requestAnimationFrame`, more atomic communication, modifying thread & job counts, remove sleeps.
-
-Run one less secondary worker, and do computations on primary worker.
-
-[todo](https://github.com/Jumbub/game-of-life-js/commit/todo)
+Don't bother calling `requestAnimationFrame`, more atomic communication, modifying thread & job counts, remove sleeps, do work on primary thread.
 
 ### Multi threaded array fill (5s)
 
@@ -236,10 +232,6 @@ A simple `const min = Math.min` outside the scope of the board operator was a gr
 
 [Benchmark demonstrating ways of casting from an array of string 1s or 0s.](https://perf.link/#eyJpZCI6InUzeXptZW8zZWF1IiwidGl0bGUiOiJGaW5kaW5nIG51bWJlcnMgaW4gYW4gYXJyYXkgb2YgMTAwMCIsImJlZm9yZSI6ImNvbnN0IGRhdGEgPSBbLi4uQXJyYXkoMTAwMDApLmtleXMoKV0ubWFwKGkgPT4gU3RyaW5nKE1hdGgucm91bmQoTWF0aC5yYW5kb20oKSkpKSIsInRlc3RzIjpbeyJuYW1lIjoiRmluZCBpdGVtIDEwMCIsImNvZGUiOiJkYXRhLm1hcCh4ID0%2BIHggPT09ICcxJyA%2FIDEgOiAwKSIsInJ1bnMiOlsyMTY2LDM4MzMsMzgzMyw1MzMzLDU4MzMsNTY2Niw1ODMzLDMxNjYsMzgzMyw0MzMzLDQ1MDAsNTUwMCw1ODMzLDMzMzMsNTMzMyw1NTAwLDU1MDAsNjAwMCw1MDAwLDQxNjYsNjUwMCw2MTY2LDU4MzMsNTMzMyw1MTY2LDYzMzMsNDgzMyw1NTAwLDUwMDAsNTAwMCwzMDAwLDUzMzMsNTY2NiwzNTAwLDM2NjYsNTgzMyw1MzMzLDUwMDAsNDUwMCw0MzMzLDU1MDAsNTY2Niw2NTAwLDI4MzMsNTgzMyw0MTY2LDYxNjYsNjMzMyw1MTY2LDM4MzMsNjUwMCwzMzMzLDM4MzMsNTAwMCwyODMzLDU1MDAsNDE2Niw2MTY2LDU1MDAsNTMzMyw1MTY2LDQwMDAsNDY2Niw1MTY2LDM1MDAsNTUwMCw2MzMzLDM2NjYsNDgzMyw1NjY2LDYwMDAsNDAwMCw0ODMzLDYzMzMsNTUwMCw2MTY2LDE1MDAsNTMzMywxNTAwLDU2NjYsNTAwMCw1MDAwLDUwMDAsNjAwMCw1MzMzLDUwMDAsNTUwMCw2MTY2LDM4MzMsMzY2Niw2NTAwLDY1MDAsNTAwMCw1NTAwLDQ1MDAsNTY2Niw0MDAwLDQ2NjYsNTE2Niw1NjY2XSwib3BzIjo0OTU0fSx7Im5hbWUiOiJGaW5kIGl0ZW0gMjAwIiwiY29kZSI6ImRhdGEubWFwKHggPT4gTnVtYmVyKHgpKSIsInJ1bnMiOlsyODMzLDQwMDAsNTY2Niw3MTY2LDY2NjYsNjMzMyw1ODMzLDYzMzMsNTY2Niw1MzMzLDYwMDAsNDgzMyw2MzMzLDQzMzMsNTY2Niw2MzMzLDU1MDAsNTE2Niw2MDAwLDUxNjYsNjMzMyw1NTAwLDQzMzMsNTY2Niw0MzMzLDQxNjYsNjE2Niw1MzMzLDUwMDAsNTUwMCw1NTAwLDU1MDAsNTAwMCw1NjY2LDY4MzMsNTMzMyw0ODMzLDU4MzMsNzAwMCw2MzMzLDY2NjYsNjMzMyw2MDAwLDUwMDAsNjE2Niw2ODMzLDY2NjYsNjUwMCw1MDAwLDYwMDAsNjAwMCw0MDAwLDU1MDAsNTUwMCw2MzMzLDYxNjYsNzAwMCw3MDAwLDUwMDAsNjAwMCw0ODMzLDYwMDAsNTY2Niw1MTY2LDYxNjYsNzE2Niw2MzMzLDI4MzMsNjMzMyw2MTY2LDc1MDAsMTE2Niw1MTY2LDU2NjYsNjE2Niw2MzMzLDUwMDAsNDE2Niw1MTY2LDY1MDAsNTE2Niw1NTAwLDY2NjYsNTUwMCw3MTY2LDUwMDAsNDY2Niw1NTAwLDYxNjYsNDAwMCw2MTY2LDE1MDAsNjgzMyw2MDAwLDYxNjYsNTgzMyw2MTY2LDYzMzMsNTAwMCw2ODMzXSwib3BzIjo1NjI2fSx7Im5hbWUiOiJGaW5kIGl0ZW0gNDAwIiwiY29kZSI6ImRhdGEubWFwKHggPT4gcGFyc2VJbnQoeCkpIiwicnVucyI6WzIxNjYsNTAwMCw2MzMzLDYwMDAsNjUwMCw1NjY2LDQ4MzMsNTMzMyw0MDAwLDUzMzMsNTUwMCw3MTY2LDU2NjYsNzAwMCwzNTAwLDY2NjYsNjY2Niw2MTY2LDYxNjYsNjUwMCw2MDAwLDUwMDAsNzY2Niw0ODMzLDQ1MDAsNTY2Niw2MzMzLDYwMDAsNTAwMCwzMzMzLDY2NjYsMTUwMCw1ODMzLDY4MzMsNjE2Niw0MzMzLDYxNjYsNjMzMyw3MTY2LDQ2NjYsNzE2Niw1NTAwLDUwMDAsNTMzMyw2NTAwLDcwMDAsNjgzMyw2NTAwLDUzMzMsNTY2Niw1MDAwLDYwMDAsNjMzMyw1MTY2LDUzMzMsNDgzMyw2MzMzLDY2NjYsNTMzMyw2ODMzLDYzMzMsNjgzMyw2NTAwLDQ4MzMsNjE2Niw1MzMzLDY1MDAsNTAwMCw2MDAwLDc1MDAsNzE2Niw0MzMzLDYzMzMsNTUwMCw1MTY2LDQwMDAsNzAwMCw2NTAwLDQ4MzMsNTgzMyw2ODMzLDYxNjYsNTMzMyw2NTAwLDY2NjYsNjAwMCw3MzMzLDQ1MDAsNDMzMyw2ODMzLDY1MDAsNjE2Niw1NTAwLDM4MzMsNTAwMCw3MTY2LDY1MDAsNTgzMyw2NjY2LDYwMDBdLCJvcHMiOjU3ODF9XSwidXBkYXRlZCI6IjIwMjItMDMtMjZUMTA6NTM6MjUuNDI3WiJ9)
 
-### Having the same work done in a worker is slower
-
-The speed at this [commit](TODO) went from 35.98 gens/sec to 3.7 seconds _just_ by moving the same work to a worker.
-
 ### Sharing data with workers
 
 When sending messages to workers, you have 3 options.
@@ -294,7 +286,16 @@ I came to the realisation that the position of the mouse had a dramatic impact o
 
 > Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
 
-> TODO: compare results with primary Chrome user and guest
+Doing these tests again [now](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46), yields a boring new set of results.
+
+~time | mouse state | mouse over
+--- | --- | ---
+3.0s | moving | chrome window
+3.0s | moving | devtools window
+2.7s | moving | random window
+2.5s | still | chrome window
+2.5s | still | random window
+2.5s | still | devtools window
 
 ### Chrome user matters
 
@@ -319,8 +320,6 @@ Messaging is 3.8s, atomics are 3.6s
 For some reason, without doing an `rm -rf dist .parcel-cache` before every build, Chrome was still retrieving legacy JS bundles.
 
 This is definitely a cause of a lot of weird benchmark issues, so was a pain to find.
-
-TODO: investigate exactly where the issue is stemming from
 
 ### Fastest min
 
