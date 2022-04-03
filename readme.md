@@ -361,7 +361,7 @@ const min = Math.min // outside loop
 const tilI = min(i + SKIP_MULTIPLYER, endI);
 ```
 
-### Fastest mod
+### Fastest floor
 
 ```
 // 2.95s
