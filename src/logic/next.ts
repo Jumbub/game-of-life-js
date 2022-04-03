@@ -46,7 +46,7 @@ export const nextBoardSection = (
   } while (i % SKIP_MULTIPLYER !== 0 && i < endI);
 
   while (i < endI) {
-    while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
+    while (inSkip[i / SKIP_MULTIPLYER]) i += SKIP_MULTIPLYER;
 
     const tilI = Math.min(i + SKIP_MULTIPLYER, endI);
     while (i < tilI) {
