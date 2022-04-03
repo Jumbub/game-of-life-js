@@ -51,8 +51,7 @@ export const nextBoardSection = (
 
     const tilI = min(i + SKIP_MULTIPLYER, endI);
     while (i < tilI) {
-      output[i] = isAlive(i, input, width);
-      if (input[i] !== output[i]) revokeSkipForNeighbours(i, outSkip, width);
+      if (input[i] !== (output[i] = isAlive(i, input, width))) revokeSkipForNeighbours(i, outSkip, width);
       i++;
     }
   }
