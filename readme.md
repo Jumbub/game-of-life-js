@@ -6,7 +6,7 @@ Conway's Game of Life, as fast as possible _without hashing_.
 
 This repository documents transpiling (by hand) a [C++ application](https://github.com/Jumbub/game-of-speed) into TypeScript, and comparing its performance.
 
-> At this point the C++ and TypeScript are largely identical (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/readme/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
+> At this point the C++ and TypeScript is largely very similar (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/main/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
 
 - [Demo app - https://gameoflife.jamiebray.me](https://gameoflife.jamiebray.me/index.html)
 - [Run the benchmark - https://gameoflife.jamiebray.me/benchmark/index.html](https://gameoflife.jamiebray.me/benchmark/index.html)
@@ -79,13 +79,15 @@ Allowing the computation scheduling to run synchronously (removed `setTimeout(jo
 
 ### Mutiple workers computing simultaneously (12s)
 
-Currently most optimal with 16 workers, but I suspect that number will come back down to 4 once I've optimised more operations.
+Currently most optimal with 16 workers, but I suspect that number will come back down* to 4 once I've optimised more operations.
 
 4 threads: 12.70s
 8 threads: 11.74s
 16 threads: 11.45s
 
 [97067de019fc6045240d157da1ca130c77dd27dd](https://github.com/Jumbub/game-of-life-js/commit/97067de019fc6045240d157da1ca130c77dd27dd)
+
+> *it did come back down; performance is optimal with 4 workers [now](36896e15343ad3bfb2e582ce7549a70e8b032056)
 
 ### Mutiple workers computing simultaneously (11.8s)
 
@@ -240,27 +242,27 @@ const data = new ArrayBuffer(1024)
 postMessage({data}, [data])
 ```
 
-> Note: `data` is now an array buffer of length 0
+> Note: the value of `data` is mutated by `postMessage` to revoke access (sendee now holds an empty array)
 
-2) Pass by reference
+3) Pass by reference
 
 ```
 const data = new SharedArrayBuffer(1024)
 postMessage({data})
 ```
 
-> Note: ["a side effect to the block in one agent will **eventually** become visible in the other agent"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#allocating_and_sharing_memory)
+> Note: to combat race conditions, you can use [Atomics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics)
 
-### SharedArrayBuffer restrictions
+### SharedArrayBuffer
 
-In Chrome, this feature requires the page is loaded with the following headers:
+In Chrome, the `SharedArrayBuffer` is only available to a page served with the following headers:
 
 ```
 Cross-Origin-Embedder-Policy: require-corp
 Cross-Origin-Opener-Policy: same-origin
 ```
 
-### The mouse matters
+### Chrome extensions stealing performance
 
 During this [commit](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46),
 I came to the realisation that the position of the mouse had a dramatic impact on app performance.
@@ -274,11 +276,10 @@ I came to the realisation that the position of the mouse had a dramatic impact o
 4.96s | still | devtools window
 4.96s | still | random window
 
-> Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
+> Disabling the mouse listeners in `mouse.ts` had no measurable effect on the results
 
-Doing these tests again , yields a boring new set of results.
-
-I decided to re-visit this test with the current [source](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46) and to my surprise, the issue of difference performance based on which window you hover is "gone".
+Later on, during this [commit](https://github.com/Jumbub/game-of-life-js/commit/353d0caf2ef05bda7c8401b3553a3822a0adc5a7),
+I decided to re-run these tests, and found that there was no longer a gap in "still mouse" performance.
 
 ~time | mouse state | mouse over
 --- | --- | ---
@@ -289,32 +290,24 @@ I decided to re-visit this test with the current [source](https://github.com/Jum
 2.5s | still | random window
 2.5s | still | devtools window
 
-So I went back and verified the issue still existed with the old commit (and it did).
+Being curious, I re-ran the tests on the old commit; and I was still getting crazy results.
 
-Then I decided to run the tests in a guest window, and the issue was gone again.
+So I re-tested the old commit on a Guest account - voila! No more performance issues.
 
-So I decided to run a new test: mouse over Chrome window, with different extensions enabled:
+This implied to me that an extension was miss-behaving; so I ran the tests again, but with only a single extension enabled at a time.
 
-~time | extension enabled
+~time | enabled extension
 --- | ---
-4.85s | none
+4.85s | -
 4.93s | adblock
 4.95s | honey
 5.70s | bitwarden
 
 Found the culprit. Yikes.
 
-After some digging, I realised that the document title changing was causing Bitwarden to run some scripts. After removing the title change, performance was back to base.
+After some digging, I realised that the Bitwarden was listening to document title changes, because after removing them, performance was back to base.
 
-### Chrome user matters
-
-Running benchmarks as the "guest" account will mean you don't have any extensions running in the background, affecting your performance.
-
-On my primary account I was getting a consistent 4.95s (±0.05s), but on the guest account I got 4.85s (±0.05s).
-
-I have quite a few extensions - AdBlock, Bitwarden, Honey, Javascript Switcher, Vimium, React dev tools - did not spend the time to find a specific culprit - I assume this would be the culprit, but I can't be sure.
-
-Disabling all extensions knocked me down to a 4.89s (which I got 4 times in a row), but that still didn't match the performance of the guest account.
+This is why it wasn't an issue anymore, because I deleted title changes back in this [commit](https://github.com/Jumbub/game-of-life-js/commit/824092fba80eed0546fde1f77142580844adc340), and now I understand why that change had such a big impact.
 
 ### Message via atomics
 
