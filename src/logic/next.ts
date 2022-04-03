@@ -48,7 +48,8 @@ export const nextBoardSection = (
   while (i < endI) {
     while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
-    for (let r = 0; r < SKIP_MULTIPLYER && i < endI; r++) {
+    const tilI = Math.min(i + SKIP_MULTIPLYER, endI);
+    while (i < tilI) {
       output[i] = isAlive(i, input, width);
       if (input[i] !== output[i]) revokeSkipForNeighbours(i, outSkip, width);
       i++;
