@@ -297,7 +297,7 @@ Doing these tests again [now](https://github.com/Jumbub/game-of-life-js/commit/0
 2.5s | still | random window
 2.5s | still | devtools window
 
-I can reproduce the issues with the previous commit, but I have _noooo_ idea what caused them.
+I can re-produce the issues with the older commit, and can mitigate them by opening a Guest session in Chrome.
 
 ### Chrome user matters
 
