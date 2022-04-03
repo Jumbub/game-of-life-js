@@ -314,6 +314,8 @@ So I decided to run a new test: mouse over Chrome window, with different extensi
 
 Found the culprit. Yikes.
 
+After some digging, I realised that the document title changing was causing Bitwarden to run some scripts. After removing the title change, performance was back to base.
+
 ### Chrome user matters
 
 Running benchmarks as the "guest" account will mean you don't have any extensions running in the background, affecting your performance.
