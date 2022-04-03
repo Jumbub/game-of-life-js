@@ -121,7 +121,7 @@ Increase skip multiplyer from 2 to 8
 
 ### Lots of things (6.4s)
 
-Remove call to `requestAnimationFrame` from 30 fps interval timer, and just call render lambda directly.
+Don't bother calling `requestAnimationFrame`, more atomic communication, modifying thread & job counts, remove sleeps.
 
 Run one less secondary worker, and do computations on primary worker.
 
@@ -157,9 +157,70 @@ I noticed this because there was a linear increase in "Node" memory usage, which
 
 ### Delete duplicate operations (3.4s)
 
-Free performance by just removing 3 lines of code.
+Free performance by removing 3 lines which were doing unecessary, duplicate writes.
 
 [09a1a0a2d68ba6bb7f7915fcbb57f482900f1069](https://github.com/Jumbub/game-of-life-js/commit/09a1a0a2d68ba6bb7f7915fcbb57f482900f1069)
+
+### Batch non-skippables (3.2s)
+
+First real deviation from the original C++ algorithm, we are batching non-skippable operations because unlike C++ we cannot do a `reinterpret_cast` to bitshift over our reads.
+
+[b6f8ba9b099f1b75d5bd7f54d9e508246e05be42](https://github.com/Jumbub/game-of-life-js/commit/b6f8ba9b099f1b75d5bd7f54d9e508246e05be42)
+
+### Branch removal (3.05s)
+
+Do some pre-processing until our iterator `i` lines up with a value which supports less branching code.
+
+[efd5de3597d30e6a6fd7334597b45d60b698600b](https://github.com/Jumbub/game-of-life-js/commit/efd5de3597d30e6a6fd7334597b45d60b698600b)
+
+### Mod operator removal (2.95s)
+
+```
+-   do {
+-     ...
+-   } while (i % SKIP_MULTIPLYER !== 0 && i < endI);
+
++   for (let r = 0; r < SKIP_MULTIPLYER && i < endI; r++) {
++     ...
++   }
+```
+
+[cbf13e3a6ac330f8174d52bca7f5ddb5a51e6da8](https://github.com/Jumbub/game-of-life-js/commit/cbf13e3a6ac330f8174d52bca7f5ddb5a51e6da8)
+
+### Simplify non-skippable batching (2.85s)
+
+```
+-    for (let r = 0; r < SKIP_MULTIPLYER && i < endI; r++) {
++    const tilI = Math.min(i + SKIP_MULTIPLYER, endI);
++    while (i < tilI) {
+```
+
+[575ebd26e88d22902e9c4c509fc8a76b52fcc1b5](https://github.com/Jumbub/game-of-life-js/commit/575ebd26e88d22902e9c4c509fc8a76b52fcc1b5)
+
+### Remove now unecessary floor operation (2.75s)
+
+```
+-    while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
++    while (inSkip[i / SKIP_MULTIPLYER]) i += SKIP_MULTIPLYER;
+```
+
+[e37da62550e34ac0c425ef78647db95345c73d03](https://github.com/Jumbub/game-of-life-js/commit/e37da62550e34ac0c425ef78647db95345c73d03)
+
+### Local reference to Math.min (2.65s)
+
+A simple `const min = Math.min` outside the scope of the board operator was a great performance improvement.
+
+[545195cc7f058f7e577207ac6783e2b3d215ecde](https://github.com/Jumbub/game-of-life-js/commit/545195cc7f058f7e577207ac6783e2b3d215ecde)
+
+### Assignment as an expression ain't bad after all (2.55s)
+
+```
+-      output[i] = isAlive(i, input, width);
+-      if (input[i] !== output[i]) revokeSkipForNeighbours(i, outSkip, width);
++      if (input[i] !== (output[i] = isAlive(i, input, width))) revokeSkipForNeighbours(i, outSkip, width);
+```
+
+[1f1d08cd5bea5a08e1150e298ad6a912289cba9b](https://github.com/Jumbub/game-of-life-js/commit/1f1d08cd5bea5a08e1150e298ad6a912289cba9b)
 
 <br/>
 
