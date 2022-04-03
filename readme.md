@@ -2,20 +2,61 @@
 
 [![deploy](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml/badge.svg)](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml)
 
-Conway's Game of Life, as fast as possible _without hashing_.
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), as fast as possible _with constant memory usage_. (constant sized, wrapping grid)
 
-This repository documents transpiling (by hand) a [C++ application](https://github.com/Jumbub/game-of-speed) into TypeScript, and comparing its performance.
-
-> At this point the C++ and TypeScript is largely very similar (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/main/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
-
-- [Demo app - https://gameoflife.jamiebray.me](https://gameoflife.jamiebray.me/index.html)
+- [Click here for the demo](https://gameoflife.jamiebray.me/index.html)
 - [Run the benchmark - https://gameoflife.jamiebray.me/benchmark/index.html](https://gameoflife.jamiebray.me/benchmark/index.html)
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
 
+This goal of this repository is to bring JavaScript performance to [C++](https://github.com/Jumbub/game-of-speed) level.
+
+JS | C++
+--- | ---
+2.55s | 1.14s
+
+> The source code is largely the same (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/main/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
+
 <br/>
 
-## Gettings started
+## Strategies for high performance
+
+#### Dormat cell detection
+
+If it is impossible for the state of a group of cells to change in the next generation, mark them as skippable.
+
+When a group of cells are skippable, we can avoid a _large_ number of memory reads/writes.
+
+#### Parallel compute
+
+A [Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) will be spun up for every available cpu.
+
+#### Job queue
+
+To address the issue of fast and slow zones, we create a job queue which creates smaller more evenly balanced work.
+
+- now workers who have a fast zone will pick up more work, rather than just waiting for slow zone workers to finish
+- this also limits the effect of a busy cpu (working on something other than this app); because if a cpu is blocked, it will only be blocking a small region
+
+#### Smudge rendering
+
+Locking the cell state to perform a render has an _extremely_ negative impact on performance, so we just don't. If you can notice the visual issues that this causes, I will be _very_ impressed (I can't).
+
+#### Branchless operations
+
+Yes that is a vague statement, but given how many speedups have come just from removing conditionals, it is worth mentioning explicitly.
+
+<br/>
+
+## Benchmark
+
+- wrapping grid of 2560 x 1440
+- seeded by `src/test/benchmark.ts`
+- atleast 29.97 renders per second
+
+<br/>
+
+## Getting started
 
 `npm install`
 
