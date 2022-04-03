@@ -89,7 +89,6 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
     nextBoardSection(beginI, endI, board.width, input, output, inSkips, outSkips);
   };
 
-  // Note: likely improvements by moving this into the setup function
   workers.forEach(worker => {
     const message: BootMessage = {
       board,
