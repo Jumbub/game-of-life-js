@@ -39,15 +39,17 @@ export const nextBoardSection = (
 ) => {
   fillSkips(outSkip, i + width - 1, endI - width + 1);
   while (i < endI) {
-    while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
+    if (i % SKIP_MULTIPLYER === 0) while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
-    output[i] = isAlive(i, input, width);
+    do {
+      output[i] = isAlive(i, input, width);
 
-    if (input[i] !== output[i]) {
-      revokeSkipForNeighbours(i, outSkip, width);
-    }
+      if (input[i] !== output[i]) {
+        revokeSkipForNeighbours(i, outSkip, width);
+      }
 
-    i++;
+      i++;
+    } while (i % SKIP_MULTIPLYER !== 0 && i < endI);
   }
 };
 
