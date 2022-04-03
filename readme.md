@@ -297,6 +297,8 @@ Doing these tests again [now](https://github.com/Jumbub/game-of-life-js/commit/0
 2.5s | still | random window
 2.5s | still | devtools window
 
+I can reproduce the issues with the previous commit, but I have _noooo_ idea what caused them.
+
 ### Chrome user matters
 
 Running benchmarks as the "guest" account will mean you don't have any extensions running in the background, affecting your performance.
