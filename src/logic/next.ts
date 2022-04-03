@@ -52,13 +52,15 @@ export const nextBoardSection = (
 };
 
 const createJobs = (segments: number, width: number, height: number): [number, number][] => {
-  let endI = width;
-  const segmentSize = (Math.floor(height / segments) + (height % segments)) * width;
-  return [...Array(segments)].map(() => {
-    const beginI = endI + 1;
-    endI = Math.min(width * (height - 1), endI + segmentSize);
-    return [beginI, endI - 1];
-  });
+  const computeSize = width * (height - 2);
+  const cellsPerSegment = computeSize / segments;
+  return Array(segments)
+    .fill(0)
+    .map((_, i) => [i * cellsPerSegment, (i + 1) * cellsPerSegment])
+    .map(([left, right]) => [Math.floor(left / width) * width, Math.floor(right / width) * width])
+    .map(([left, right]) => [left + width, right + width])
+    .map(([left, right]) => [Math.max(width, left), Math.min(width * (height - 1), right)])
+    .map(([left, right]) => [left + 1, right - 1]);
 };
 
 const setSkipBorders = (board: Board, jobs: [number, number][]) => {
