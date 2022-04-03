@@ -260,3 +260,24 @@ For some reason, without doing an `rm -rf dist .parcel-cache` before every build
 This is definitely a cause of a lot of weird benchmark issues, so was a pain to find.
 
 TODO: investigate exactly where the issue is stemming from
+
+### Fastest min
+
+[context & fastest solution](https://github.com/Jumbub/game-of-life-js/commit/545195cc7f058f7e577207ac6783e2b3d215ecde)
+
+```
+// 2.90s
+const tilI = (i + SKIP_MULTIPLYER > endI) * endI + (i + SKIP_MULTIPLYER <= endI) * (i + SKIP_MULTIPLYER);
+
+// 2.75s
+let tilI = i + SKIP_MULTIPLYER;
+if (tilI > endI) tilI = endI;
+
+// 2.72s
+const tilI = Math.min(i + SKIP_MULTIPLYER, endI);
+
+// 2.68s
+const min = Math.min // outside loop
+...
+const tilI = min(i + SKIP_MULTIPLYER, endI);
+```
