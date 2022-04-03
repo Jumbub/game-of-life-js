@@ -286,7 +286,9 @@ I came to the realisation that the position of the mouse had a dramatic impact o
 
 > Disabling the mouse listeners in `mouse.ts` had no noticable effect on the results
 
-Doing these tests again [now](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46), yields a boring new set of results.
+Doing these tests again , yields a boring new set of results.
+
+I decided to re-visit this test with the current [source](https://github.com/Jumbub/game-of-life-js/commit/09e3a15157109f31dac01818aa38efd011938f46) and to my surprise, the issue of difference performance based on which window you hover is "gone".
 
 ~time | mouse state | mouse over
 --- | --- | ---
@@ -297,7 +299,20 @@ Doing these tests again [now](https://github.com/Jumbub/game-of-life-js/commit/0
 2.5s | still | random window
 2.5s | still | devtools window
 
-I can re-produce the issues with the older commit, and can mitigate them by opening a Guest session in Chrome.
+So I went back and verified the issue still existed with the old commit (and it did).
+
+Then I decided to run the tests in a guest window, and the issue was gone again.
+
+So I decided to run a new test: mouse over Chrome window, with different extensions enabled:
+
+~time | extension enabled
+--- | ---
+4.85s | none
+4.93s | adblock
+4.95s | honey
+5.70s | bitwarden
+
+Found the culprit. Yikes.
 
 ### Chrome user matters
 
