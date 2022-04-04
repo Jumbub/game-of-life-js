@@ -46,9 +46,20 @@ Yes that is a vague statement, but given how many speedups have come just from r
 
 ## Benchmark
 
+### Hardware
+
+- i5-7600K @ 4.4GHz
+- GTX 1080
+
+### Software
+
+- Google Chrome, Version 96.0.4664.45 (Official Build) (64-bit)
+
+### Scenario
+
 - wrapping grid of 2560 x 1440
 - seeded by `src/test/benchmark.ts`
-- atleast 29.97 renders per second
+- with atleast 29.97 renders per second
 
 <br/>
 
@@ -59,8 +70,6 @@ Yes that is a vague statement, but given how many speedups have come just from r
 2.55s | 1.14s
 
 > Obviously your times will vary, but relatively speaking, JS _ain't bad_
-
-> Ran on a 4 core, i5-7600K (4.4GHz), with a GTX 1080
 
 <br/>
 
