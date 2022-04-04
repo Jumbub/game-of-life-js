@@ -2,20 +2,16 @@
 
 [![deploy](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml/badge.svg)](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml)
 
-[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), as fast as possible _with constant memory usage_. (constant sized, wrapping grid)
+Hand transpiling [my C++ implementation](https://github.com/Jumbub/game-of-life-cpp) of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) into JavaScript (TS), to compare performance.
+
+> Both apps use the same optimization strategies (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/main/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-life-cpp/blob/main/src/logic/next.cpp))
 
 - [Click here for the demo](https://gameoflife.jamiebray.me/index.html)
 - [Run the benchmark - https://gameoflife.jamiebray.me/benchmark/index.html](https://gameoflife.jamiebray.me/benchmark/index.html)
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
 
-This goal of this repository is to bring JavaScript performance to [C++](https://github.com/Jumbub/game-of-speed) level.
-
-JS | C++
---- | ---
-2.55s | 1.14s
-
-> The source code is largely the same (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/main/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-speed/blob/main/src/logic/next.cpp))
+### [The results may shock you](#results)
 
 <br/>
 
@@ -56,6 +52,18 @@ Yes that is a vague statement, but given how many speedups have come just from r
 
 <br/>
 
+## Results
+
+[JS](https://gameoflife.jamiebray.me/benchmark/index.html) | [C++](https://github.com/Jumbub/game-of-life-cpp)
+--- | ---
+2.55s | 1.14s
+
+> Obviously your times will vary, but relatively speaking, JS _ain't bad_
+
+> Ran on a 4 core, i5-7600K (4.4GHz), with a GTX 1080
+
+<br/>
+
 ## Getting started
 
 `npm install`
@@ -86,7 +94,7 @@ http://localhost:8080/benchmark/all
 
 ### First working benchmark (75s)
 
-Naive and simple manual transpilation of the [C++ implementation](https://github.com/Jumbub/game-of-speed) to Typescript, without any advanced Javascript (typed arrays, workers, etc).
+Naive and simple manual transpilation of the [C++ implementation](https://github.com/Jumbub/game-of-life-cpp) to Typescript, without any advanced Javascript (typed arrays, workers, etc).
 
 [c15cae4d00beb59f5e6e50f495a323eca3f24eb5](https://github.com/Jumbub/game-of-life-js/commit/9227c6a55ede200a1b6fe827c93010963e704f3d)
 
