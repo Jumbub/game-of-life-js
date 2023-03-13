@@ -1,4 +1,4 @@
-# Game of Life (JS)
+# [Game of Life (JS)](https://gameoflife.jamiebray.me/index.html)
 
 [![deploy](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml/badge.svg)](https://github.com/Jumbub/game-of-life-js/actions/workflows/deploy.yml)
 
