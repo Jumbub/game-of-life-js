@@ -4,6 +4,7 @@
 
 Investigating JavaScript optimization techniques while building Game of Life.
 
+
 - [Click here for the demo](https://gameoflife.jamiebray.me/index.html)
 - [Log of benchmark improvements](#log-of-benchmark-improvements)
 - [Interesting findings](#interesting-findings)
@@ -13,11 +14,12 @@ Investigating JavaScript optimization techniques while building Game of Life.
 
 Results with comparisson to a fundamentally equivilant [C++](https://github.com/Jumbub/game-of-life-cpp) implementation.
 
-[JS](https://gameoflife.jamiebray.me/benchmark/index.html) | [C++](https://github.com/Jumbub/game-of-life-cpp)
---- | ---
-2.55s | 1.14s
+Benchmark | [JS](https://gameoflife.jamiebray.me/benchmark/index.html) | [C++](https://github.com/Jumbub/game-of-life-cpp)
+--- | --- | ---
+per cell avg | 0.34ns | 0.15ns
+total | 2.55s | 1.14s
 
-> Obviously your times will vary, but relatively speaking, JS _ain't bad_
+> Obviously hardware dependent, but relatively speaking, JS _ain't bad_
 
 > Both apps use the same fundamental strategies (compare [next.ts](https://github.com/Jumbub/game-of-life-js/blob/main/src/logic/next.ts) with [next.cpp](https://github.com/Jumbub/game-of-life-cpp/blob/main/src/logic/next.cpp))
 
