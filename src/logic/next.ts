@@ -42,23 +42,25 @@ export const nextBoardSection = (
   inSkip: Skips,
   outSkip: Skips,
 ) => {
-  if ((i - 1) % 2562 !== 0) debugger;
-  if ((endI + 1) % 2562 !== 0) debugger;
   fillSkips(outSkip, i + width - 1, endI - width + 1);
-  while (i < endI) {
-    while (inSkip[~~(i / SKIP_MULTIPLYER)]) i += SKIP_MULTIPLYER;
 
+  do {
     output[i] = isAlive(i, input, width);
-
-    if (input[i] !== output[i]) {
-      revokeSkipForNeighbours(i, outSkip, width);
-    }
-
+    if (input[i] !== output[i]) revokeSkipForNeighbours(i, outSkip, width);
     i++;
+  } while (i % SKIP_MULTIPLYER !== 0 && i < endI);
+
+  while (i < endI) {
+    while (inSkip[i / SKIP_MULTIPLYER]) i += SKIP_MULTIPLYER;
+
+    const tilI = min(i + SKIP_MULTIPLYER, endI);
+    while (i < tilI) {
+      if (input[i] !== (output[i] = isAlive(i, input, width))) revokeSkipForNeighbours(i, outSkip, width);
+      i++;
+    }
   }
 };
 
-const setSkipBorders = (board: Board, jobs: Jobs) => {
   const { outSkips } = getBoardIo(board);
   const { width, height } = board;
 
@@ -114,8 +116,6 @@ export const startNextBoardLoop = (generationsAndMax: Uint32Array, board: Board,
   jobsDone.forEach((_, i) => Atomics.store(jobsDone, i, DONE));
   times.forEach((_, i) => Atomics.store(times, i, 1));
 
-  // Note: likely improvements by moving this into the setup function
-  workers.forEach((worker, jobI) => {
     const message: BootMessage = {
       jobI,
       board,
