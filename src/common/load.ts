@@ -19,7 +19,11 @@ export const match = (board: Board, data: string) => {
   if (data.length !== board.width * board.height) throw new Error('Miss-match width, height for data matcher');
   const { output } = getBoardIo(board);
 
-  return output.every((value, i) => value === parseInt(data[i]));
+  return output.every((value, i) => {
+    const same = value === parseInt(data[i]);
+    if (!same) console.error(`failed to match at cell ${i}`);
+    return same;
+  });
 };
 
 export const random = (size: number) => {

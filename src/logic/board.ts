@@ -62,15 +62,17 @@ export const newBoard = (viewWidth: number, viewHeight: number) => {
 };
 
 export const flipBoardIo = (board: Board) => {
-  board.cellsInput[0] = 1 - board.cellsInput[0];
-  board.skipsInput[0] = 1 - board.skipsInput[0];
+  Atomics.store(board.cellsInput, 0, 1 - Atomics.load(board.cellsInput, 0));
+  Atomics.store(board.skipsInput, 0, 1 - Atomics.load(board.skipsInput, 0));
 };
 
 export const getBoardIo = (board: Board) => {
+  const cellsInput = Atomics.load(board.cellsInput, 0);
+  const skipsInput = Atomics.load(board.skipsInput, 0);
   return {
-    input: board.cells[board.cellsInput[0]],
-    output: board.cells[1 - board.cellsInput[0]],
-    inSkips: board.skips[board.skipsInput[0]],
-    outSkips: board.skips[1 - board.skipsInput[0]],
+    input: board.cells[cellsInput],
+    output: board.cells[1 - cellsInput],
+    inSkips: board.skips[skipsInput],
+    outSkips: board.skips[1 - skipsInput],
   };
 };

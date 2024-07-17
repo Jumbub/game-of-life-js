@@ -1,7 +1,7 @@
 import { load } from '../common/load';
 import { createNonDeterministicBenchmark } from '../common/noneDeterministicBenchmark';
 import { run, setup } from '../graphics/loop';
-import { PROBABLY_OPTIMAL_JOB_COUNT, PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads';
+import { PROBABLY_OPTIMAL_THREAD_COUNT } from '../logic/threads';
 import { parseNumberOrDefault } from '../parseNumberOrDefault';
 
 (async () => {
@@ -15,11 +15,7 @@ import { parseNumberOrDefault } from '../parseNumberOrDefault';
     maxGenerations,
     1000 / rendersPerSecond,
     PROBABLY_OPTIMAL_THREAD_COUNT,
-    PROBABLY_OPTIMAL_JOB_COUNT,
-    () => {
-      meta.primaryWorker.terminate();
-    },
   );
   load(meta.board, createNonDeterministicBenchmark(innerWidth, innerHeight));
-  run(meta);
+  await run(meta);
 })();
